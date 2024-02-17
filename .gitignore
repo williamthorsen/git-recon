@@ -1,0 +1,10 @@
+.idea/
+
+# local-only files
+local/
+
+# Node
+node_modules/
+
+# OS files
+.DS_Store
