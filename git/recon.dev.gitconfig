@@ -54,6 +54,16 @@
     | sed -e $'s/\\[synced\\]/\\033[32m✔\\033[0m/g'; \
   }; f"
 
+  is-tracking-branch = "!f() {\
+    branch=${1:-$(git branch --show-current)}; \
+    upstream_branch=$(git for-each-ref --format='%(upstream:short)' refs/heads/${branch}); \
+    if [[ -z \"${upstream_branch}\" ]]; then \
+      return 1; \
+    else \
+       return 0; \
+    fi; \
+  }; f"
+
   # List recent local branches
   list-recent-branches = "!f() {\
     count=${1:-10}; \

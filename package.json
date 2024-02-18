@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "scripts/run-all-tests.sh",
-    "test:config": "./git/__tests__/aliases.test.sh"
+    "test:quick": "git/__tests__/recon-quick.test.sh",
+    "test:recon": "./git/__tests__/recon.config.test.sh"
   },
   "keywords": [],
   "author": "",
