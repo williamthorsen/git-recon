@@ -29,12 +29,43 @@ assert_match() {
   local actual=$2
 
   if [[ "$(remove_colors "$actual")" =~ $expected ]]; then
-    echo " ✅ "
+    show_success
   else
     count_failure
+    show_failure
     echo " FAILED ❌ "
     echo "  Expected: $expected"
     echo "  Actual:   $actual"
+    return 1
+  fi
+}
+
+assert_success() {
+  local status=$1
+  local output=$2
+
+  if [[ $status -eq 0 ]]; then
+    show_success
+  else
+    count_failure
+    show_failure
+    echo "  Error: $output"
+    return 1
+  fi
+}
+
+assert_no_error() {
+  local output
+
+  output=$("$@" 2>&1)
+  local status=$?
+
+  if [[ $status -eq 0 ]]; then
+    show_success
+  else
+    count_failure
+    show_failure
+    echo "  Error: $output"
     return 1
   fi
 }
@@ -43,6 +74,21 @@ before_each() {
   # Not strictly needed for this, but retained as a placeholder.
   # Remember that each test runs in its own subshell, so writes to variables are not persisted.
   test_name="undefined"
+}
+
+assert_critical_success() {
+  local status=$1
+  local message=${2:-"Fatal error. Exiting."}
+
+  # Check if the return value indicates a fatal error
+  if [[ $status -eq 0 ]]; then
+    show_success
+  else
+    count_failure
+    show_failure
+    echo "  Error: $message"
+    exit 1
+  fi
 }
 
 on_test_completion () {
@@ -69,7 +115,7 @@ describe_suite() {
 }
 
 describe_test() {
-  printf "▶︎ it $test_name"
+  printf "▶︎ it $test_name "
 }
 
 it() {
@@ -107,4 +153,12 @@ report_errors() {
 
 setup_tests() {
   trap on_test_completion EXIT
+}
+
+show_failure() {
+  echo " ... FAILED ❌ "
+}
+
+show_success() {
+  echo " ... passed ✅ "
 }

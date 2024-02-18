@@ -4,7 +4,8 @@
   "description": "Git aliases for working with recent branches",
   "main": "index.js",
   "scripts": {
-    "test": "./git/__tests__/recon.config.test.sh"
+    "test": "scripts/run-all-tests.sh",
+    "test:config": "./git/__tests__/aliases.test.sh"
   },
   "keywords": [],
   "author": "",
