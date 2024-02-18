@@ -1,4 +1,10 @@
 [alias]
+  branches-with-tracking = "!f() {\
+    args=(\"$@\"); \
+    git for-each-ref \"$@\" --format='%(refname:short) %(upstream:short) %(upstream:track)' refs/heads \
+    | awk '{if ($2 != \"\" && $3 == \"\") $3 = \"[synced]\"; print}'; \
+  }; f"
+
   # Select a recent branch by number
   checkout-nth = "!f() {\
     count=$1; \
@@ -43,6 +49,7 @@
     git checkout ${branchWithOption}; \
   }; f"
 
+  # TODO: Move to helper aliases
   format-tracking = "!f() { \
     set -e; \
     tracking=${1}; \
@@ -54,6 +61,7 @@
     | sed -e $'s/\\[synced\\]/\\033[32m✔\\033[0m/g'; \
   }; f"
 
+  # TODO: Move to helper aliases
   is-tracking-branch = "!f() {\
     branch=${1:-$(git branch --show-current)}; \
     upstream_branch=$(git for-each-ref --format='%(upstream:short)' refs/heads/${branch}); \
@@ -67,8 +75,9 @@
   # List recent local branches
   list-recent-branches = "!f() {\
     count=${1:-10}; \
-    ref_set=${2:-heads}; \
     : 'ref_set: heads | remotes'; \
+    ref_set=${2:-heads}; \
+    \
     git for-each-ref \
       --color=always \
       --count=${count} \
@@ -112,6 +121,13 @@
         echo \"${remote_branch} ${local_branch} ${tracking}\"; \
       fi; \
     done; \
+  }; f"
+
+  recent = "!f() {\
+    args=(\"$@\"); \
+    : 'This is a wrapper for for-each-ref refs/heads, so all options will be forwarded to that command.'; \
+    : 'But first run the same command and get only tracking information.'; \
+    git branches-with-tracking --count=10 \"${args[@]}\"; \
   }; f"
 
   # List recent local branches with formatting
@@ -274,8 +290,7 @@
       git show-recent-remote-branches-legend; \
   }; f"
 
-  # Aliases for "list", "checkout", and combined "list & prompt for checkout": local branches
-  recent = recent-branches
+  # Aliases for "checkout", and combined "list & prompt for checkout": local branches
   con = checkout-nth
   recon = recent-branches-prompt
 

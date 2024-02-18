@@ -55,6 +55,28 @@ safeDeleteBranch() {
 
 set_up_tests || exit 1
 
+describe "branches-with-tracking"; (
+  ( it "gets the tracked branch and tracking information for a tracking branch";
+    # Use the `main` branch, known to be a tracking branch, to test the output.
+    expected="^main origin\/main (\[synced\]|\[ahead [0-9]+]|\[ahead [0-9]+, behind [0-9]+\]|\[behind [0-9]+\])$"
+    actual=$(devGit branches-with-tracking | grep 'origin/main')
+    assert_match "$expected" "$actual"
+  )
+
+  ( it "has no tracked branch & no tracking information for a non-tracking branch";
+
+    non_tracking_branch_name="$BRANCH_PREFIX/non-tracking-branch"
+    safeCreateTestBranch "$non_tracking_branch_name" || exit 1
+
+    expected="^$BRANCH_PREFIX/non-tracking-branch"
+    actual=$(devGit branches-with-tracking | grep "$non_tracking_branch_name")
+    assert_match "$expected" "$actual"
+
+    # Clean up
+    safeDeleteBranch "$branch_name"
+  )
+)
+
 describe "format-tracking"; (
   ( it "replaces [behind X] with ↓X";
     input="my-local-branch [behind 2]"
@@ -116,6 +138,9 @@ describe "is-tracking-branch"; (
     devGit is-tracking-branch "$branch_name"
 
     assert_equal $? $FAILURE_CODE
+
+    # Clean up
+    safeDeleteBranch "$branch_name"
   )
 
   ( it "returns 1 for a nonexistent branch";
