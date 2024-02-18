@@ -1,0 +1,13 @@
+{
+  "name": "git-recon",
+  "version": "0.1.0",
+  "description": "Git aliases for working with recent branches",
+  "main": "index.js",
+  "scripts": {
+    "test": "scripts/run-all-tests.sh",
+    "test:config": "./git/__tests__/aliases.test.sh"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
