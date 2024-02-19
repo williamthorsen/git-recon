@@ -23,8 +23,8 @@ assert_critical_success() {
 }
 
 assert_equal() {
-  local expected=$1
-  local actual=$2
+  local actual=$1
+  local expected=$2
 
   if [[ ! "$expected" == "$actual" ]]; then
     count_failure
@@ -37,11 +37,14 @@ assert_equal() {
 assert_match() {
   local actual=$1
   local pattern=$2
+  local no_color_actual
 
-  if [[ ! "$(remove_colors "$actual")" =~ $pattern ]]; then
+  no_color_actual=$(remove_colors "$actual")
+
+  if [[ ! "$no_color_actual" =~ $pattern ]]; then
     count_failure
-    echo "  Pattern: $expected"
-    echo "  Actual:   $actual"
+    echo "  Pattern: $pattern"
+    echo "  Actual:   $no_color_actual"
     return 1
   fi
 }
@@ -136,7 +139,7 @@ on_test_completion () {
 }
 
 remove_colors() {
-  echo $1 | sed 's/\x1b\[[0-9;]*m//g'
+  echo -e "$1" | sed $'s/\x1b\[[0-9;]*m//g'
 }
 
 remove_escapes() {
