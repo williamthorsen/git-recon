@@ -2,7 +2,6 @@
   # Utility function. Returns branch name and, if a tracking branch, the tracked branch name & tracking status.
   # Most useful as a helper for `with-tracking`
   branches-with-tracking = "!f() {\
-    args=(\"$@\"); \
     git for-each-ref \"$@\" --format='%(refname:short) %(upstream:short) %(upstream:track)' refs/heads \
     | awk '{if ($2 != \"\" && $3 == \"\") $3 = \"[synced]\"; print}'; \
   }; f"
@@ -49,6 +48,11 @@
           print \"--track \" remoteBranch; \
       }'); \
     git checkout ${branchWithOption}; \
+  }; f"
+
+  default-branch = "!f() {\
+    remote=${1:-origin}; \
+    git remote show $remote | grep 'HEAD branch' | awk '{print $NF}'; \
   }; f"
 
   # TODO: Move to helper aliases
@@ -105,7 +109,7 @@
       --format='%(refname:short) %(upstream:short)' \
       refs/heads \
   | awk '{\
-      if ($2!=\"\") {\
+      if ($2 != \"\") {\
         branch = substr($2, index($2, \"/\") + 1); \
         if (branch == $1) print $2 \" \" $1; \
       } \
@@ -125,11 +129,10 @@
   }; f"
 
   recent = "!f() {\
-    args=\"$@\"; \
     current_branch=$(git branch --show-current); \
     branches=$(\
       git for-each-ref \
-        \"$args\" \
+        \"$@\" \
         --format='%(refname:short)' refs/heads/ \
         --sort=-committerdate \
     ); \
@@ -138,7 +141,7 @@
         --count=10 \
         --color=always \
         --format='%(color:blue)%(committerdate:format:%a %Y-%b-%d %H:%M)%(color:reset)|%(color:green)%(authorname)%(color:reset)|%(color:yellow)%(objectname:short)%(color:reset)|%(refname:short)|%(upstream:short)' \
-        \"$args\" \
+        \"$@\" \
         --sort=-committerdate \
     ); \
     line_number=1; \
@@ -223,8 +226,7 @@
 
   # Run `git recent` and then prompt to check out a branch by number
   recent-prompt = "!f() {\
-    args=\"$@\"; \
-    git recent $args; \
+    git recent \"$@\"; \
     printf \"Enter branch number to check out branch, [h] for help, or [Enter] to quit: \"; \
     read input; \
     case $input in \
@@ -233,6 +235,80 @@
       *[!0-9]*) echo 'Error: Input is not a branch number.'; exit 1 ;; \
     esac; \
     git checkout-nth $input; \
+  }; f"
+
+  recent-remote = "!f() {\
+    current_branch=$(git branch --show-current); \
+    : 'Get a list of all local tracking branches, filtering out those whose name is not an exact match'; \
+    local_branches_with_tracking=$(\
+      git with-tracking \
+        --color=always \
+        refs/heads/ \
+        --format='%(upstream:short) %(refname:short)' \
+      | awk '{\
+          split($1, remote_segments, \"/\"); \
+          remote_branch_name = substr($1, index($1, \"/\") + 1); \
+          local_branch_name = $2; \
+          if (remote_branch_name == local_branch_name && $3 != \"-\") print $0; \
+        }' \
+    ); \
+    : 'Names of the remote branches, using the same order & filters as the command to run'; \
+    : 'We need this because we do not know where in the output the branch name will appear'; \
+    remote_branch_names=$(\
+      git for-each-ref \
+        --count=10 \
+        refs/remotes/ \
+        \"$@\" \
+        --format='%(refname:short)' refs/remotes/ \
+        --sort=-committerdate \
+    ); \
+    : 'The full remote branch information'; \
+    remote_branches=$( \
+      git for-each-ref \
+        --color=always \
+        --count=10 \
+        refs/remotes/ \
+        --format='%(color:blue)%(committerdate:format:%a %Y-%b-%d %H:%M)%(color:reset)|%(color:green)%(authorname)%(color:reset)|%(color:yellow)%(objectname:short)%(color:reset)|%(refname:short)' \
+        \"$@\" \
+        --sort=-committerdate \
+    ); \
+    line_number=1; \
+    echo \"$remote_branches\" | while IFS= read -r remote_branch; do \
+      : 'Get the name of this branch'; \
+      remote_branch_name=$(echo \"$remote_branch_names\" | sed -n \"${line_number}p\"); \
+      : 'Find the local branch mapped to this branch'; \
+      local_branch_with_tracking=$(\
+        echo \"$local_branches_with_tracking\" | awk -v name=\"$remote_branch_name\" '$1 == name {print $0}' \
+      ); \
+      : 'Assume there is no tracking branch'; \
+      branch_with_line_number=\"$line_number|$remote_branch\"; \
+      if [ -n \"$local_branch_with_tracking\" ]; then \
+        local_branch_name=$(echo \"$local_branch_with_tracking\" | awk '{print $2}'); \
+        tracking=$(echo \"$local_branch_with_tracking\" | awk '{print $3}'); \
+        if [ \"$local_branch_name\" = \"$current_branch\" ]; then \
+          branch_with_line_number=\"▶︎|$remote_branch $tracking\"; \
+        else \
+          branch_with_line_number=\"$line_number|$remote_branch $tracking\"; \
+        fi; \
+      else \
+        if [ \"$remote_branch_name\" = \"HEAD\" ]; then \
+          branch_with_line_number=\"$line_number|$remote_branch [@default]\"; \
+        fi; \
+      fi; \
+      slash_count=$(echo \"$remote_branch_name\" | awk -F/ '{print NF-1}'); \
+      if [ $slash_count -eq 0 ]; then \
+        default_branch_name=$(git default-branch $remote_branch_name); \
+        branch_with_line_number=\"$line_number|$remote_branch [default=$default_branch_name]\"; \
+      fi; \
+      : 'Prepend ⦿ if branch has a tracking branch'; \
+      if [ -n \"$local_branch_with_tracking\" ]; then \
+        echo \"⦿ $branch_with_line_number\"; \
+      else \
+        echo \"  $branch_with_line_number\"; \
+      fi; \
+      line_number=$((line_number + 1)); \
+    done \
+    | column -ts'|'; \
   }; f"
 
   recent-remote-branches = "!f() {\
