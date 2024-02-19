@@ -1,4 +1,6 @@
 [alias]
+  # Utility function. Returns branch name and, if a tracking branch, the tracked branch name & tracking status.
+  # Most useful as a helper for `with-tracking`
   branches-with-tracking = "!f() {\
     args=(\"$@\"); \
     git for-each-ref \"$@\" --format='%(refname:short) %(upstream:short) %(upstream:track)' refs/heads \
@@ -121,13 +123,6 @@
         echo \"${remote_branch} ${local_branch} ${tracking}\"; \
       fi; \
     done; \
-  }; f"
-
-  recent = "!f() {\
-    args=(\"$@\"); \
-    : 'This is a wrapper for for-each-ref refs/heads, so all options will be forwarded to that command.'; \
-    : 'But first run the same command and get only tracking information.'; \
-    git branches-with-tracking --count=10 \"${args[@]}\"; \
   }; f"
 
   # List recent local branches with formatting
@@ -288,6 +283,26 @@
       echo \"Usage:  git recent-remote-branches-prompt [<count=10>]\"; \
       echo \"        git recon-r [<count=10>]\"; \
       git show-recent-remote-branches-legend; \
+  }; f"
+
+  # Appends tracking information to each line of the output of the original command
+  with-tracking = "!f() {\
+    args=\"$@\"; \
+    : 'This is a wrapper for for-each-ref refs/heads, so all options will be forwarded to that command.'; \
+    : 'But first run the same command and get only tracking information.'; \
+    branches_with_tracking=$(\
+      git branches-with-tracking $args refs/heads \
+      | while read line; do git format-tracking \"$line\"; done \
+      | tr '\n' '@' \
+    ); \
+    branches=$(git for-each-ref $args refs/heads/ | tr '\n' '@'); \
+    echo \"$branches\" | awk -F '@' -v bt=\"$branches_with_tracking\" \
+      'BEGIN {split(bt, btArr, \"@\"); OFS=\" \"} { \
+        for (i = 1; i <= NF; i++) { \
+          split(btArr[i], trackingInfo, \" \"); \
+          print $i, (length(trackingInfo) >= 3 ? trackingInfo[3] : \"\"); \
+        } \
+      }'; \
   }; f"
 
   # Aliases for "checkout", and combined "list & prompt for checkout": local branches

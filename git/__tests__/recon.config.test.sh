@@ -58,19 +58,19 @@ set_up_tests || exit 1
 describe "branches-with-tracking"; (
   ( it "gets the tracked branch and tracking information for a tracking branch";
     # Use the `main` branch, known to be a tracking branch, to test the output.
-    expected="^main origin\/main (\[synced\]|\[ahead [0-9]+]|\[ahead [0-9]+, behind [0-9]+\]|\[behind [0-9]+\])$"
+    pattern="^main origin\/main (\[synced\]|\[ahead [0-9]+]|\[ahead [0-9]+, behind [0-9]+\]|\[behind [0-9]+\])$"
     actual=$(devGit branches-with-tracking | grep 'origin/main')
-    assert_match "$expected" "$actual"
+    assert_match "$actual" "$pattern"
   )
 
   ( it "has no tracked branch & no tracking information for a non-tracking branch";
 
-    non_tracking_branch_name="$BRANCH_PREFIX/non-tracking-branch"
-    safeCreateTestBranch "$non_tracking_branch_name" || exit 1
+    branch_name="$BRANCH_PREFIX/non-tracking-branch"
+    safeCreateTestBranch "$branch_name" || exit 1
 
-    expected="^$BRANCH_PREFIX/non-tracking-branch"
-    actual=$(devGit branches-with-tracking | grep "$non_tracking_branch_name")
-    assert_match "$expected" "$actual"
+    pattern="^$BRANCH_PREFIX/non-tracking-branch"
+    actual=$(devGit branches-with-tracking | grep "$branch_name")
+    assert_match "$actual" "$pattern"
 
     # Clean up
     safeDeleteBranch "$branch_name"
@@ -117,10 +117,10 @@ describe "format-tracking"; (
   ( it "replaces [synced] with ✔";
     input="my-local-branch [synced]"
 
-    expected='my-local-branch ✔'
+    pattern='my-local-branch ✔'
     actual=$(devGit format-tracking "$input")
 
-    assert_match "$expected" "$actual"
+    assert_match "$actual" "$pattern"
   )
 )
 
@@ -152,8 +152,36 @@ describe "is-tracking-branch"; (
 
 describe "list-recent-branches"; (
   ( it "lists recent branches";
-    expected='.+|.+|\w{7}|git/1|(\[.*\])?|origin/git/1'
+    pattern='.+|.+|\w{7}|git/1|(\[.*\])?|origin/git/1'
     actual=$(devGit list-recent-branches 1 | grep 'git/1$')
-    assert_match "$expected" "$actual"
+    assert_match "$actual" "$pattern"
+  )
+)
+
+describe "with-tracking"; (
+  ( it "adds tracking symbols to the end of each line of a tracking branch";
+    pattern="main \S+" # Any non-empty string is tracking information
+
+    lines=$(\
+      devGit with-tracking --format='%(refname:short)' refs/heads \
+    )
+
+    assert_matches_line "$lines" "$pattern"
+  )
+
+  ( it "adds no tracking information to the end of lines for non-tracking branches";
+    branch_name="$BRANCH_PREFIX/non-tracking-branch"
+    safeCreateTestBranch "$branch_name" || exit 1
+
+    pattern="^${branch_name}\s*$" # Can have blank spaces at the end
+
+    lines=$(\
+      devGit with-tracking --format='%(refname:short)' refs/heads \
+    )
+
+    assert_matches_line "$lines" "$pattern"
+
+    # Clean up
+    safeDeleteBranch "$branch_name"
   )
 )

@@ -35,13 +35,29 @@ assert_equal() {
 }
 
 assert_match() {
-  local expected=$1
-  local actual=$2
+  local actual=$1
+  local pattern=$2
 
-  if [[ ! "$(remove_colors "$actual")" =~ $expected ]]; then
+  if [[ ! "$(remove_colors "$actual")" =~ $pattern ]]; then
     count_failure
-    echo "  Expected: $expected"
+    echo "  Pattern: $expected"
     echo "  Actual:   $actual"
+    return 1
+  fi
+}
+
+# True if the pattern is found in the output exactly once.
+assert_matches_line() {
+  local lines="$1"
+  local pattern="$2"
+  local matching_lines_count
+
+  matching_lines_count=$(echo "$lines" | grep -Ec "$pattern")
+
+  if [[ ! $matching_lines_count -eq 1 ]]; then
+    count_failure
+    echo "  Pattern: $pattern"
+    echo "  Matching lines:   $matching_lines_count"
     return 1
   fi
 }
