@@ -155,82 +155,20 @@
     | column -ts'|'; \
   }; f"
 
+  # Displays the name of the remote's default branch
   default-branch = "!f() {\
     remote=${1:-origin}; \
     git remote show $remote | grep 'HEAD branch' | awk '{print $NF}'; \
   }; f"
 
-  # TODO: Move to helper aliases
+  # Replaces tracking information from `git for-each-ref --format='%(upstream:track)'` with colour-coded symbols
   format-tracking = "!f() { \
-    tracking=${1}; \
-    echo \"$tracking\" \
+    echo \"$1\" \
     | sed -e 's/\\[ahead \\([0-9]*\\)\\]/\\\\033[32m↑\\1\\\\033[0m/g' \
     | sed -e 's/\\[ahead \\([0-9]*\\), behind \\([0-9]*\\)\\]/\\\\033[32m↑\\1\\\\033[0m\\\\033[31m↓\\2\\\\033[0m/g' \
     | sed -e 's/\\[behind \\([0-9]*\\)\\]/\\\\033[31m↓\\1\\\\033[0m/g' \
     | sed 's/\\[gone\\]/⚠️/g' \
     | sed -e $'s/\\[synced\\]/\\033[32m✔\\033[0m/g'; \
-  }; f"
-
-  # TODO: Move to helper aliases
-  is-tracking-branch = "!f() {\
-    branch=${1:-$(git branch --show-current)}; \
-    upstream_branch=$(git for-each-ref --format='%(upstream:short)' refs/heads/${branch}); \
-    if [[ -z \"${upstream_branch}\" ]]; then \
-      return 1; \
-    else \
-       return 0; \
-    fi; \
-  }; f"
-
-  # List recent local branches
-  list-recent-branches = "!f() {\
-    count=${1:-10}; \
-    : 'ref_set: heads | remotes'; \
-    ref_set=${2:-heads}; \
-    \
-    git for-each-ref \
-      --color=always \
-      --count=${count} \
-      refs/${ref_set}/ \
-        --sort=-committerdate \
-        --format='%(color:blue)%(committerdate:format:%a %Y-%b-%d %H:%M)%(color:reset)|%(color:green)%(authorname)%(color:reset)|%(color:yellow)%(objectname:short)%(color:reset)|%(refname:short)|%(upstream:track)|%(upstream:short)'; \
-  }; f"
-
-  # List recent remote branches with formatting
-  list-recent-remote-branches = "!f() {\
-    count=${1:-10}; \
-    ref_set=${2:-heads}; \
-    : 'ref_set: heads | remotes'; \
-    git for-each-ref \
-      --color=always \
-      --count=${count} \
-      refs/${ref_set}/ \
-        --sort=-committerdate \
-        --format='%(color:blue)%(committerdate:format:%a %Y-%b-%d %H:%M)%(color:reset)|%(color:green)%(authorname)%(color:reset)|%(color:yellow)%(objectname:short)%(color:reset)|%(refname:short)'; \
-  }; f"
-
-  map-remote-branches-to-local-branches = "!f() {\
-    git for-each-ref \
-      --format='%(refname:short) %(upstream:short)' \
-      refs/heads \
-  | awk '{\
-      if ($2 != \"\") {\
-        branch = substr($2, index($2, \"/\") + 1); \
-        if (branch == $1) print $2 \" \" $1; \
-      } \
-    }' \
-  | while read -r remote_branch local_branch; do \
-      tracking=$(git for-each-ref --format='%(upstream:track)' refs/heads/${local_branch}); \
-      if [[ -z "${tracking}" ]]; then \
-        tracking='UP_TO_DATE'; \
-      elif [[ "${tracking}" == "[gone]" ]]; then \
-        tracking=\"\"; \
-      fi; \
-      tracking=$(git format-tracking \"${tracking}\"); \
-      if [[ -n "${tracking}" ]]; then \
-        echo \"${remote_branch} ${local_branch} ${tracking}\"; \
-      fi; \
-    done; \
   }; f"
 
   # Wrapper for `git decorated` that gets the 10 most recently updated local branches
@@ -241,72 +179,9 @@
       --sort=-committerdate; \
   }; f"
 
-  # Wrapper for `git decorated-remote` that gets the 10 most recently updated remote branches
-  recent-remote = "!f() {\
-    git decorated-remote \
-      --count=10 \
-      \"$@\" \
-      --sort=-committerdate; \
-  }; f"
-
-  # List recent local branches with formatting
-  recent-branches = "!f() {\
-    count=${1:-10}; \
-    : 'If count is not a numeric string, print usage and return an error code'; \
-    if ! [[ \"$count\" =~ ^[0-9]+$ ]]; then \
-      if [[ \"$count\" == \"h\" || \"$count\" == \"help\" ]]; then \
-        git show-recent-branches-usage; \
-        return 0; \
-      fi; \
-      echo \"Error: Input is not a numeric string.\"; \
-      git show-recent-branches-usage; \
-      return 1; \
-    fi; \
-    current_branch=$(git branch --show-current); \
-    output=$(git list-recent-branches $count heads \
-    | awk '{print NR \" \" $0}' \
-    | awk 'BEGIN{FS=OFS=\"|\"} {if($NF==\"\") $NF=\"\"; else $NF=\"@TRACKING@\"; print}' \
-    | awk -v cb=$current_branch '{ \
-       split($0, a, \"|\"); \
-       remote_branch = a[length(a) - 2]; \
-       print (remote_branch == cb ? \"▶︎\" : $1) \"|\" substr($0, length($1) + 2) \
-     }' \
-    | awk 'BEGIN{FS=OFS=\"|\"} {\
-        print (($NF == \"@TRACKING@\" ? \"⦿ \" : \"  \") $0) \
-      }' \
-    | awk 'BEGIN{FS=OFS=\"|\"} { \
-        if($(NF-1)==\"\" && $NF == \"@TRACKING@\") $(NF-1)=\"\\033[32m✔\\033[0m\"; \
-        NF--; \
-        print \
-      }' \
-    | rev | sed 's/|/ /' | rev \
-    | sed 's/\\[gone\\]/⚠️/g' \
-    | column -ts'|'); \
-    git format-tracking \"${output}\"; \
-  }; f"
-
-  # List recent local branches and prompt to select one to check out
-  recent-branches-prompt = "!f() { \
-    count=${1:-10}; \
-    : 'If count is not a numeric string, print usage and return an error code'; \
-    if ! [[ \"$count\" =~ ^[0-9]+$ ]]; then \
-      if [[ \"$count\" == \"h\" || \"$count\" == \"help\" ]]; then \
-        git show-recent-branches-prompt-usage; \
-        return 0; \
-      fi; \
-      echo \"Error: Input is not a numeric string.\"; \
-      git show-recent-branches-prompt-usage; \
-      return 1; \
-    fi; \
-    git recent-branches $count; \
-    printf \"Enter branch number to check out branch, [h] for help, or [Enter] to quit: \"; \
-    read input; \
-    case $input in \
-      h) git show-recent-branches-prompt-usage; exit 0 ;; \
-      ''|q|0) exit ;; \
-      *[!0-9]*) echo 'Error: Input is not a branch number.'; exit 1 ;; \
-    esac; \
-    git checkout-nth $input; \
+  recent-legend = "!f() { \
+    echo \"LEGEND: ▶︎ current branch\"; \
+    echo \"        ⦿ tracking branch | \\033[32m↑ commits ahead\\033[0m | \\033[31m↓ commits behind\\033[0m | \\033[32m✔\\033[0m up to date | ⚠️ upstream gone\"; \
   }; f"
 
   # Run `git recent` and then prompt to check out a branch by number
@@ -322,73 +197,6 @@
     git checkout-nth $input; \
   }; f"
 
-  recent-remote-branches = "!f() {\
-    count=${1:-10}; \
-    : 'If count is not a numeric string, print usage and return an error code'; \
-    if ! [[ \"$count\" =~ ^[0-9]+$ ]]; then \
-      if [[ \"$count\" == \"h\" || \"$count\" == \"help\" ]]; then \
-        git show-recent-remote-branches-usage; \
-        return 0; \
-      fi; \
-      echo \"Error: Input is not a numeric string.\"; \
-      git show-recent-remote-branches-usage; \
-      return 1; \
-    fi; \
-    branches=$(git for-each-ref --format='%(refname:short)' --sort=-committerdate refs/heads/ | tr '\n' '@'); \
-    : 'branch_map=$(git map-remote-branches-to-local-branches)'; \
-    current_branch=$(git branch --show-current); \
-    : 'Build a hash of remote branches to local branches of the same name'; \
-    git list-recent-remote-branches $count remotes \
-    | awk \
-      -v branches="@"$branches \
-      -v branch_map="@"$branch_map \
-      -v cb=$current_branch \
-      '{ \
-        split($0, a, \"|\"); \
-        remote_branch = a[length(a)]; \
-        branch = substr(remote_branch, index(remote_branch, \"/\") + 1); \
-        if (branch == cb) \
-          print \"⦿ ▶︎|\" $0; \
-        else if (match(branches, \"@\"branch\"@\") != 0) \
-          print \"⦿ \" NR \"|\" $0; \
-        else if (branch == \"HEAD\") \
-          print \"  \" NR \"|\" $0 \" [@default]\"; \
-        else \
-          print \"  \" NR \"|\" $0; \
-      }' \
-    | column -ts'|'; \
-  }; f"
-
-  # List recent remote branches and prompt to select one to check out
-  recent-remote-branches-prompt = "!f() {\
-    count=${1:-10}; \
-    : 'If count is not a numeric string, print usage and return an error code'; \
-    if ! [[ \"$count\" =~ ^[0-9]+$ ]]; then \
-      if [[ \"$count\" == \"h\" || \"$count\" == \"help\" ]]; then \
-        git show-recent-remote-branches-prompt-usage; \
-        return 0; \
-      fi; \
-      echo \"Error: Input is not a numeric string.\"; \
-      git show-recent-remote-branches-prompt-usage; \
-      return 1; \
-    fi; \
-    branches=$(git for-each-ref --format='%(refname:short)' --sort=-committerdate refs/heads/ | tr '\n' '@'); \
-    git recent-remote-branches $count; \
-    printf \"Enter branch number to check out branch, [h] for help, or [Enter] to quit: \"; \
-    read input; \
-    case $input in \
-      h) git show-recent-remote-branches-prompt-usage; exit 0 ;; \
-      ''|q|0) exit ;; \
-      *[!0-9]*) echo 'Error: Input is not a branch number.'; exit 1 ;; \
-    esac; \
-    git checkout-nth-remote $input; \
-  }; f"
-
-  recent-legend = "!f() { \
-    echo \"LEGEND: ▶︎ current branch\"; \
-    echo \"        ⦿ tracking branch | \\033[32m↑ commits ahead\\033[0m | \\033[31m↓ commits behind\\033[0m | \\033[32m✔\\033[0m up to date | ⚠️ upstream gone\"; \
-  }; f"
-
   recent-prompt-usage = "!f() { \
     echo \"Lists recent branches and prompts to check out a branch.\"; \
     echo \"Usage:  git recent-prompt [--count=10]\"; \
@@ -396,30 +204,37 @@
     git recent-legend; \
   }; f"
 
-  show-recent-branches-usage = "!f() { \
-    echo \"Lists recent branches.\"; \
-    echo \"Usage:  git recent-branches [<count=10>]\"; \
-    echo \"        git recent [<count=10>]\"; \
-    git show-recent-branches-legend; \
+  # Wrapper for `git decorated-remote` that gets the 10 most recently updated remote branches
+  recent-remote = "!f() {\
+    git decorated-remote \
+      --count=10 \
+      \"$@\" \
+      --sort=-committerdate; \
   }; f"
 
-  show-recent-remote-branches-usage = "!f() { \
-      echo \"Lists recent remote branches.\"; \
-      echo \"Usage:  git recent-remote-branches [<count=10>]\"; \
-      echo \"        git recent-r [<count=10>]\"; \
-      git show-recent-remote-branches-legend; \
-  }; f"
-
-  show-recent-remote-branches-legend = "!f() { \
+  recent-remote-legend = "!f() { \
     echo \"Legend: ▶︎ current local branch\"; \
-    echo \"        ⦿ has local tracking branch\"; \
+    echo \"        ⦿ has local tracking branch | \\033[32m↑ commits ahead\\033[0m | \\033[31m↓ commits behind\\033[0m | \\033[32m✔\\033[0m up to date\"; \
   }; f"
 
-  show-recent-remote-branches-prompt-usage = "!f() { \
+  # Run `git recent-remote` and then prompt to check out a branch by number
+  recent-remote-prompt = "!f() {\
+    git recent-remote \"$@\"; \
+    printf \"Enter branch number to check out branch, [h] for help, or [Enter] to quit: \"; \
+    read input; \
+    case $input in \
+      h) git recent-remote-prompt-usage; exit 0 ;; \
+      ''|q|0) exit ;; \
+      *[!0-9]*) echo 'Error: Input is not a branch number.'; exit 1 ;; \
+    esac; \
+    git checkout-nth-remote $input; \
+  }; f"
+
+  recent-remote-prompt-usage = "!f() { \
       echo \"Lists recent remote branches and prompts to check out a branch.\"; \
       echo \"Usage:  git recent-remote-branches-prompt [<count=10>]\"; \
       echo \"        git recon-r [<count=10>]\"; \
-      git show-recent-remote-branches-legend; \
+      git recent-remote-legend; \
   }; f"
 
   # Appends tracking information to each line of the output of the original command
@@ -445,11 +260,11 @@
       }'; \
   }; f"
 
-  # Aliases for "checkout", and combined "list & prompt for checkout": local branches
+  # Aliases for "checkout" & "recent + checkout": local branches
   con = checkout-nth
-  recon = recent-branches-prompt
+  recon = recent-prompt
 
-  # Aliases for "list", "checkout", and combined "list & prompt for checkout": remote branches
-  recent-r = recent-remote-branches
+  # Aliases for "checkout", "recent" & "recent + checkout": remote branches
   con-r = checkout-nth-remote
-  recon-r = recent-remote-branches-prompt
+  recent-r = recent-remote
+  recon-r = recent-remote-prompt
