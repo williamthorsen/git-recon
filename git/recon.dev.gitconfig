@@ -319,6 +319,7 @@
     echo \"$branches\" | awk -F '@' -v bt=\"$branches_with_tracking\" \
       'BEGIN {split(bt, btArr, \"@\"); OFS=\" \"} { \
         for (i = 1; i <= NF; i++) { \
+          if ($i == \"\" || btArr[i] == \"\") continue; \
           split(btArr[i], trackingInfo, \" \"); \
           print $i, (length(trackingInfo) >= 3 ? trackingInfo[3] : \"-\"); \
         } \
