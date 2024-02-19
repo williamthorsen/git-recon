@@ -169,11 +169,11 @@ describe "with-tracking"; (
     assert_matches_line "$lines" "$pattern"
   )
 
-  ( it "adds no tracking information to the end of lines for non-tracking branches";
+  ( it "adds a hyphen to the end of lines for non-tracking branches";
     branch_name="$BRANCH_PREFIX/non-tracking-branch"
     safeCreateTestBranch "$branch_name" || exit 1
 
-    pattern="^${branch_name}\s*$" # Can have blank spaces at the end
+    pattern="^${branch_name} -$"
 
     lines=$(\
       devGit with-tracking --format='%(refname:short)' refs/heads \

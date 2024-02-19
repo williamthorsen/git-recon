@@ -302,7 +302,7 @@
       'BEGIN {split(bt, btArr, \"@\"); OFS=\" \"} { \
         for (i = 1; i <= NF; i++) { \
           split(btArr[i], trackingInfo, \" \"); \
-          print $i, (length(trackingInfo) >= 3 ? trackingInfo[3] : \"\"); \
+          print $i, (length(trackingInfo) >= 3 ? trackingInfo[3] : \"-\"); \
         } \
       }'; \
   }; f"
