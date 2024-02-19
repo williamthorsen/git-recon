@@ -64,12 +64,14 @@ describe "branches-with-tracking"; (
   )
 
   ( it "has no tracked branch & no tracking information for a non-tracking branch";
-
+    # Set up
     branch_name="$BRANCH_PREFIX/non-tracking-branch"
     safeCreateTestBranch "$branch_name" || exit 1
 
     pattern="^$BRANCH_PREFIX/non-tracking-branch"
+
     actual=$(devGit branches-with-tracking | grep "$branch_name")
+
     assert_match "$actual" "$pattern"
 
     # Clean up
@@ -132,6 +134,7 @@ describe "is-tracking-branch"; (
   )
 
   ( it "returns 1 for a non-tracking branch";
+    # Set up
     branch_name="$BRANCH_PREFIX/non-tracking-branch"
     safeCreateTestBranch "$branch_name" || exit 1
 
@@ -158,6 +161,38 @@ describe "list-recent-branches"; (
   )
 )
 
+describe "recent"; (
+  ( it "prepends a fisheye and space to tracking branches"
+    pattern="^⦿ .*main \S+" # Any non-empty string is tracking information
+
+    lines=$(devGit recent)
+
+    assert_matches_line "$lines" "$pattern"
+  )
+
+  ( it "prepends two spaces to non-tracking branches"
+    # Set up
+    branch_name="$BRANCH_PREFIX/non-tracking-branch"
+    safeCreateTestBranch "$branch_name" || exit 1
+
+    pattern="^  .*non-tracking-branch\s*$"
+
+    lines=$(devGit recent)
+
+    assert_matches_line "$lines" "$pattern"
+  )
+
+  ( it "accepts a custom format"
+    pattern="^⦿ main \S+" # Any non-empty string is tracking information
+
+    lines=$(\
+      devGit recent --format='%(refname:short)' \
+    )
+
+    assert_matches_line "$lines" "$pattern"
+  )
+)
+
 describe "with-tracking"; (
   ( it "adds tracking symbols to the end of each line of a tracking branch";
     pattern="main \S+" # Any non-empty string is tracking information
@@ -170,6 +205,7 @@ describe "with-tracking"; (
   )
 
   ( it "adds a hyphen to the end of lines for non-tracking branches";
+    # Set up
     branch_name="$BRANCH_PREFIX/non-tracking-branch"
     safeCreateTestBranch "$branch_name" || exit 1
 

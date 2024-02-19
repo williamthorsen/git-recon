@@ -125,6 +125,24 @@
     done; \
   }; f"
 
+  recent = "!f() {\
+    args=\"$@\"; \
+    git with-tracking \
+      --count=10 \
+      --color=always \
+      --format='%(color:blue)%(committerdate:format:%a %Y-%b-%d %H:%M)%(color:reset)|%(color:green)%(authorname)%(color:reset)|%(color:yellow)%(objectname:short)%(color:reset)|%(refname:short)|%(upstream:short)' \
+      --sort=-committerdate \
+      \"$args\" \
+    | awk '{\
+        if (substr($NF, length($NF)) == \"-\") {\
+          print \"  \" substr($0, 1, length($0) - 1); \
+        } else {\
+          print \"⦿ \" $0; \
+        }\
+    }' \
+    | column -ts'|'; \
+  }; f"
+
   # List recent local branches with formatting
   recent-branches = "!f() {\
     count=${1:-10}; \
