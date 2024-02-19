@@ -29,7 +29,7 @@
       echo \"       git con-r [<branch_number=10>]\"; \
       return 1; \
     fi; \
-    localBranches=$(git for-each-ref --format='%(refname:short)' --sort=committerdate refs/heads/ | tr '\n' '@'); \
+    localBranches=$(git for-each-ref --format='%(refname:short)' --sort=-committerdate refs/heads/ | tr '\n' '@'); \
     remoteBranch=$(git for-each-ref --count=${count} --sort=-committerdate refs/remotes/ --format='%(refname:short)' | sed -n ${count}p); \
     : 'If remote branch is the 'HEAD' pointer, check out the default branch.'; \
     if [[ $remoteBranch == */HEAD ]]; then \
@@ -197,7 +197,7 @@
       git show-recent-remote-branches-usage; \
       return 1; \
     fi; \
-    branches=$(git for-each-ref --format='%(refname:short)' --sort=committerdate refs/heads/ | tr '\n' '@'); \
+    branches=$(git for-each-ref --format='%(refname:short)' --sort=-committerdate refs/heads/ | tr '\n' '@'); \
     : 'branch_map=$(git map-remote-branches-to-local-branches)'; \
     current_branch=$(git branch --show-current); \
     : 'Build a hash of remote branches to local branches of the same name'; \
@@ -235,7 +235,7 @@
       git show-recent-remote-branches-prompt-usage; \
       return 1; \
     fi; \
-    branches=$(git for-each-ref --format='%(refname:short)' --sort=committerdate refs/heads/ | tr '\n' '@'); \
+    branches=$(git for-each-ref --format='%(refname:short)' --sort=-committerdate refs/heads/ | tr '\n' '@'); \
     git recent-remote-branches $count; \
     printf \"Enter branch number to check out branch, [h] for help, or [Enter] to quit: \"; \
     read input; \
