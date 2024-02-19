@@ -177,8 +177,13 @@
       git recent-usage; \
       return 0; \
     fi; \
+    count=10; \
+    if [[ \"$1\" =~ ^-?[0-9]+$ ]]; then \
+      count=$1; \
+      shift; \
+    fi; \
     git decorated \
-      --count=10 \
+      --count=$count \
       \"$@\" \
       --sort=-committerdate; \
   }; f"
@@ -190,21 +195,25 @@
 
   recent-usage = "!f() { \
     echo \"Lists recent branches.\"; \
-    echo \"Usage:  git recent [--count=10]\"; \
-    git recent-legend; \
+    echo \"Usage:  git recent [<count=10>] [<for-each-ref-args>]\"; \
+    echo \"        git recent help\"; \
+    echo \"        - <count=10>            # Number of branches to display\"; \
+    echo \"        - <for-each-ref-args>   # Any arguments accepted by 'git for-each-ref'\"; \
+    echo \"        - help                  # Displays this help message\"; \
   }; f"
 
   # Run `git recent` and then prompt to check out a branch by number
   recent-prompt = "!f() {\
     if [ \"$1\" = 'help' ]; then \
       git recent-prompt-usage; \
+      git recent-legend; \
       return 0; \
     fi; \
     git recent \"$@\"; \
     printf \"Enter branch number to check out branch, [h] for help, or [Enter] to quit: \"; \
     read input; \
     case $input in \
-      h) git recent-prompt-usage; exit 0 ;; \
+      h) echo; git recent-prompt-usage; git recent-legend; exit 0 ;; \
       ''|q|0) exit ;; \
       *[!0-9]*) echo 'Error: Input is not a branch number.'; exit 1 ;; \
     esac; \
@@ -213,9 +222,12 @@
 
   recent-prompt-usage = "!f() { \
     echo \"Lists recent branches and prompts to check out a branch.\"; \
-    echo \"Usage:  git recent-prompt [--count=10]\"; \
-    echo \"Alias:  git recon [--count=10]\"; \
-    git recent-legend; \
+    echo \"Usage:  git recent-prompt [<count=10>] [<for-each-ref-args>]\"; \
+    echo \"        git recent-prompt help\"; \
+    echo \"        - <count=10>            # Number of branches to display\"; \
+    echo \"        - <for-each-ref-args>   # Any arguments accepted by 'git for-each-ref'\"; \
+    echo \"        - help                  # Displays this help message\"; \
+    echo \"Alias:  git recon\"; \
   }; f"
 
   # Wrapper for `git decorated-remote` that gets the 10 most recently updated remote branches
@@ -224,8 +236,13 @@
       git recent-remote-usage; \
       return 0; \
     fi; \
+    count=10; \
+    if [[ \"$1\" =~ ^-?[0-9]+$ ]]; then \
+      count=$1; \
+      shift; \
+    fi; \
     git decorated-remote \
-      --count=10 \
+      --count=$count \
       \"$@\" \
       --sort=-committerdate; \
   }; f"
@@ -239,13 +256,18 @@
   recent-remote-prompt = "!f() {\
     if [ \"$1\" = 'help' ]; then \
       git recent-remote-prompt-usage; \
+      git recent-remote-legend; \
       return 0; \
     fi; \
-    git recent-remote \"$@\"; \
+    count=10; \
+    if [[ \"$1\" =~ ^-?[0-9]+$ ]]; then \
+      count=$1; \
+    fi; \
+    git recent-remote --count=$count \"$@\"; \
     printf \"Enter branch number to check out branch, [h] for help, or [Enter] to quit: \"; \
     read input; \
     case $input in \
-      h) git recent-remote-prompt-usage; exit 0 ;; \
+      h) git recent-remote-prompt-usage; git-recent-remote-legend; exit 0 ;; \
       ''|q|0) exit ;; \
       *[!0-9]*) echo 'Error: Input is not a branch number.'; exit 1 ;; \
     esac; \
@@ -253,17 +275,20 @@
   }; f"
 
   recent-remote-usage = "!f() { \
-      echo \"Lists recent remote branches.\"; \
-      echo \"Usage:  git recent-remote [--count=10]\"; \
-      echo \"Alias:  git recent-r [--count=10]\"; \
-      git recent-remote-legend; \
+    echo \"Lists recent remote branches.\"; \
+    echo \"Usage:  git recent-remote [<count=10>] [<for-each-ref-args>]\"; \
+    echo \"        git recent-remote help\"; \
+    echo \"        - <count=10>            # Number of branches to display\"; \
+    echo \"        - <for-each-ref-args>   # Any of the standard args accepted by 'git for-each-ref'\"; \
+    echo \"        - help                  # Displays this help message\"; \
+    echo \"Alias:  git recent-r\"; \
+    git recent-remote-legend; \
   }; f"
 
   recent-remote-prompt-usage = "!f() { \
       echo \"Lists recent remote branches and prompts to check out a branch.\"; \
       echo \"Usage:  git recent-remote-prompt [--count=10]\"; \
       echo \"Alias:  git recon-r [--count=10]\"; \
-      git recent-remote-legend; \
   }; f"
 
   # Appends tracking information to each line of the output of the original command
