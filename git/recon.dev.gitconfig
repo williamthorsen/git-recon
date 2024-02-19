@@ -131,13 +131,12 @@
       --count=10 \
       --color=always \
       --format='%(color:blue)%(committerdate:format:%a %Y-%b-%d %H:%M)%(color:reset)|%(color:green)%(authorname)%(color:reset)|%(color:yellow)%(objectname:short)%(color:reset)|%(refname:short)|%(upstream:short)' \
-      --sort=-committerdate \
-      \"$args\" \
+      --sort=-committerdate \"$args\" \
     | awk '{\
         if (substr($NF, length($NF)) == \"-\") {\
-          print \"  \" substr($0, 1, length($0) - 1); \
+          print \"  \" NR \"|\" substr($0, 1, length($0) - 1); \
         } else {\
-          print \"⦿ \" $0; \
+          print \"⦿ \" NR \"|\" $0; \
         }\
     }' \
     | column -ts'|'; \

@@ -162,20 +162,20 @@ describe "list-recent-branches"; (
 )
 
 describe "recent"; (
-  ( it "prepends a fisheye and space to tracking branches"
-    pattern="^⦿ .*main \S+" # Any non-empty string is tracking information
+  ( it "prepends a fisheye, space, and the row number to tracking branches"
+    pattern="^⦿ [0-9]+.*main \S+" # Any non-empty string is tracking information
 
     lines=$(devGit recent)
 
     assert_matches_line "$lines" "$pattern"
   )
 
-  ( it "prepends two spaces to non-tracking branches"
+  ( it "prepends two spaces and the row number to non-tracking branches"
     # Set up
     branch_name="$BRANCH_PREFIX/non-tracking-branch"
     safeCreateTestBranch "$branch_name" || exit 1
 
-    pattern="^  .*non-tracking-branch\s*$"
+    pattern="^  [0-9]+.*non-tracking-branch\s*$"
 
     lines=$(devGit recent)
 
@@ -183,7 +183,7 @@ describe "recent"; (
   )
 
   ( it "accepts a custom format"
-    pattern="^⦿ main \S+" # Any non-empty string is tracking information
+    pattern="^⦿ [0-9]+ \s+main \S+" # Any non-empty string is tracking information
 
     lines=$(\
       devGit recent --format='%(refname:short)' \
