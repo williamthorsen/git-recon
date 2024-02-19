@@ -25,54 +25,65 @@ describe "git aliases"; (
     exit 1
   fi
 
+  ( it "runs branches-with-tracking";
+    assert_no_error devGit branches-with-tracking
+  )
+
+  ( it "runs decorated";
+    assert_no_error devGit decorated
+  )
+
+  ( it "runs decorated-remote";
+    assert_no_error devGit decorated-remote
+  )
+
   ( it "runs format-tracking";
     assert_no_error devGit format-tracking "my-local-branch [behind 2]"
   )
 
-  ( it "runs list-recent-branches";
-    assert_no_error devGit list-recent-branches
+  ( it "runs recent";
+    assert_no_error devGit recent
   )
 
-  ( it "runs list-recent-remote-branches";
-    assert_no_error devGit list-recent-remote-branches
+  ( it "runs recent";
+    assert_no_error devGit recent-legend
   )
 
-  ( it "runs map-remote-branches-to-local-branches";
-    assert_no_error devGit map-remote-branches-to-local-branches
+  ( it "runs recent-usage";
+    assert_no_error devGit recent-usage
   )
 
-  ( it "runs recent-branches";
-    output=$(devGit recent-branches 2>&1)
+  ( it "runs recent-prompt";
+    output=$(echo | devGit recent-prompt 2>&1)
     assert_success $? "$output"
   )
 
-  ( it "runs recent-branches-prompt";
-    output=$(echo | devGit recent-branches-prompt 2>&1)
+  ( it "runs recent-prompt-usage";
+    assert_no_error devGit recent-prompt-usage
+  )
+
+  ( it "runs recent-remote";
+    assert_no_error devGit recent-remote
+  )
+
+  ( it "runs recent-remote-legend";
+    assert_no_error devGit recent-remote-legend
+  )
+
+  ( it "runs recent-remote-usage";
+    assert_no_error devGit recent-remote-usage
+  )
+
+  ( it "runs recent-remote-prompt";
+    output=$(echo | devGit recent-remote-prompt 2>&1)
     assert_success $? "$output"
   )
 
-  ( it "runs recent-remote-branches";
-    assert_no_error devGit recent-remote-branches
+  ( it "runs recent-remote-prompt-usage";
+    assert_no_error devGit recent-remote-prompt-usage
   )
 
-  ( it "runs recent-remote-branches-prompt";
-    output=$(echo | devGit recent-remote-branches-prompt 2>&1)
-    assert_success $? "$output"
-  )
-
-  ( it "runs show-recent-branches-prompt-usage";
-    assert_no_error devGit show-recent-branches-prompt-usage
-  )
-
-  ( it "runs show-recent-branches-usage";
-    assert_no_error devGit show-recent-branches-usage
-  )
-
-  ( it "runs show-recent-remote-branches-prompt-usage";
-    assert_no_error devGit show-recent-remote-branches-prompt-usage
-  )
-
-  ( it "show-recent-remote-branches-prompt-usage";
-    assert_no_error devGit show-recent-remote-branches-prompt-usage
+  ( it "runs with-tracking";
+    assert_no_error devGit with-tracking
   )
 )
