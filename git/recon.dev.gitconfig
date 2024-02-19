@@ -287,15 +287,17 @@
 
   # Appends tracking information to each line of the output of the original command
   with-tracking = "!f() {\
-    args=\"$@\"; \
     : 'This is a wrapper for for-each-ref refs/heads, so all options will be forwarded to that command.'; \
     : 'But first run the same command and get only tracking information.'; \
     branches_with_tracking=$(\
-      git branches-with-tracking $args refs/heads \
+      git branches-with-tracking refs/heads \"$@\" \
       | while read line; do git format-tracking \"$line\"; done \
       | tr '\n' '@' \
     ); \
-    branches=$(git for-each-ref $args refs/heads/ | tr '\n' '@'); \
+    branches=$(\
+      git for-each-ref \"$@\" refs/heads/ \
+      | tr '\n' '@' \
+    ); \
     echo \"$branches\" | awk -F '@' -v bt=\"$branches_with_tracking\" \
       'BEGIN {split(bt, btArr, \"@\"); OFS=\" \"} { \
         for (i = 1; i <= NF; i++) { \
