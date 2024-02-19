@@ -141,8 +141,10 @@
       fi; \
       slash_count=$(echo \"$remote_branch_name\" | awk -F/ '{print NF-1}'); \
       if [ $slash_count -eq 0 ]; then \
-        default_branch_name=$(git default-branch $remote_branch_name); \
-        branch_with_line_number=\"$line_number|$remote_branch => ${remote_branch_name}/${default_branch_name}\"; \
+        : 'Disabled resolution of default branch because it is a slow operation'; \
+        : 'default_branch_name=$(git default-branch $remote_branch_name)'; \
+        : 'branch_with_line_number=\"$line_number|$remote_branch => ${remote_branch_name}/${default_branch_name}\"'; \
+        branch_with_line_number=\"$line_number|$remote_branch \\033[90m[default branch]\\033[0m\"; \
       fi; \
       : 'Prepend ⦿ if branch has a tracking branch'; \
       if [ -n \"$local_branch_with_tracking\" ]; then \
