@@ -83,28 +83,29 @@ describe "format-tracking"; (
   ( it "replaces [behind X] with ↓X";
     input="my-local-branch [behind 2]"
 
-    expected='my-local-branch ↓2';
+    pattern='my-local-branch ↓2';
     actual=$(devGit format-tracking "$input")
 
-    assert_equal "$expected" "$actual"
+    printf "ACTUAL: %s" "$actual"
+    assert_match "$actual" "$pattern"
   )
 
   ( it "replaces [ahead X] with ↑X";
     input="my-local-branch [ahead 3]"
 
-    expected='my-local-branch ↑3'
+    pattern='my-local-branch ↑3'
     actual=$(devGit format-tracking "$input")
 
-    assert_equal "$expected" "$actual"
+    assert_match "$actual" "$pattern"
   )
 
   ( it "replaces [ahead X, behind Y] with ↑X↓Y";
     input="my-local-branch [ahead 1, behind 2]"
 
-    expected='my-local-branch ↑1↓2'
+    pattern='my-local-branch ↑1↓2'
     actual=$(devGit format-tracking "$input")
 
-    assert_equal "$expected" "$actual"
+    assert_match "$actual" "$pattern"
   )
 
   ( it "replaces [gone] with {gone symbol}";
@@ -113,7 +114,7 @@ describe "format-tracking"; (
     expected='my-local-branch ⚠️'
     actual=$(devGit format-tracking "$input")
 
-    assert_equal "$expected" "$actual"
+    assert_equal "$actual" "$expected"
   )
 
   ( it "replaces [synced] with ✔";

@@ -53,12 +53,11 @@
 
   # TODO: Move to helper aliases
   format-tracking = "!f() { \
-    set -e; \
     tracking=${1}; \
     echo \"$tracking\" \
-    | sed -e 's/\\[ahead \\([0-9]*\\)\\]/↑\\1/g' \
-    | sed -e 's/\\[ahead \\([0-9]*\\), behind \\([0-9]*\\)\\]/↑\\1↓\\2/g' \
-    | sed -e 's/\\[behind \\([0-9]*\\)\\]/↓\\1/g' \
+    | sed -e 's/\\[ahead \\([0-9]*\\)\\]/\\\\033[32m↑\\1\\\\033[0m/g' \
+    | sed -e 's/\\[ahead \\([0-9]*\\), behind \\([0-9]*\\)\\]/\\\\033[32m↑\\1\\\\033[0m\\\\033[31m↓\\2\\\\033[0m/g' \
+    | sed -e 's/\\[behind \\([0-9]*\\)\\]/\\\\033[31m↓\\1\\\\033[0m/g' \
     | sed 's/\\[gone\\]/⚠️/g' \
     | sed -e $'s/\\[synced\\]/\\033[32m✔\\033[0m/g'; \
   }; f"
@@ -131,7 +130,8 @@
       --count=10 \
       --color=always \
       --format='%(color:blue)%(committerdate:format:%a %Y-%b-%d %H:%M)%(color:reset)|%(color:green)%(authorname)%(color:reset)|%(color:yellow)%(objectname:short)%(color:reset)|%(refname:short)|%(upstream:short)' \
-      --sort=-committerdate \"$args\" \
+      \"$args\" \
+      --sort=-committerdate \
     | awk '{\
         if (substr($NF, length($NF)) == \"-\") {\
           print \"  \" NR \"|\" substr($0, 1, length($0) - 1); \
@@ -202,6 +202,20 @@
     git checkout-nth $input; \
   }; f"
 
+  # Run `git recent` and then prompt to check out a branch by number
+  recent-prompt = "!f() {\
+    args=\"$@\"; \
+    git recent $args; \
+    printf \"Enter branch number to check out branch, [h] for help, or [Enter] to quit: \"; \
+    read input; \
+    case $input in \
+      h) git recent-prompt-usage; exit 0 ;; \
+      ''|q|0) exit ;; \
+      *[!0-9]*) echo 'Error: Input is not a branch number.'; exit 1 ;; \
+    esac; \
+    git checkout-nth $input; \
+  }; f"
+
   recent-remote-branches = "!f() {\
     count=${1:-10}; \
     : 'If count is not a numeric string, print usage and return an error code'; \
@@ -264,16 +278,16 @@
     git checkout-nth-remote $input; \
   }; f"
 
-  show-recent-branches-legend = "!f() { \
+  recent-legend = "!f() { \
     echo \"LEGEND: ▶︎ current branch\"; \
-    echo \"        ⦿ tracking branch | ⬆ commits ahead | ⬇ commits behind | \\033[32m✔\\033[0m up to date | ⚠️ upstream gone\"; \
+    echo \"        ⦿ tracking branch | \\033[32m↑ commits ahead\\033[0m | \\033[31m↓ commits behind\\033[0m | \\033[32m✔\\033[0m up to date | ⚠️ upstream gone\"; \
   }; f"
 
-  show-recent-branches-prompt-usage = "!f() { \
+  recent-prompt-usage = "!f() { \
     echo \"Lists recent branches and prompts to check out a branch.\"; \
-    echo \"Usage:  git recent-branches-prompt [<count=10>]\"; \
-    echo \"        git recon [<count=10>]\"; \
-    git show-recent-branches-legend; \
+    echo \"Usage:  git recent-prompt [--count=10]\"; \
+    echo \"        git recon [--count=10]\"; \
+    git recent-legend; \
   }; f"
 
   show-recent-branches-usage = "!f() { \
