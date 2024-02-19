@@ -126,19 +126,38 @@
 
   recent = "!f() {\
     args=\"$@\"; \
-    git with-tracking \
-      --count=10 \
-      --color=always \
-      --format='%(color:blue)%(committerdate:format:%a %Y-%b-%d %H:%M)%(color:reset)|%(color:green)%(authorname)%(color:reset)|%(color:yellow)%(objectname:short)%(color:reset)|%(refname:short)|%(upstream:short)' \
-      \"$args\" \
-      --sort=-committerdate \
-    | awk '{\
+    current_branch=$(git branch --show-current); \
+    branches=$(\
+      git for-each-ref \
+        \"$args\" \
+        --format='%(refname:short)' refs/heads/ \
+        --sort=-committerdate \
+    ); \
+    branches_with_tracking=$(\
+      git with-tracking \
+        --count=10 \
+        --color=always \
+        --format='%(color:blue)%(committerdate:format:%a %Y-%b-%d %H:%M)%(color:reset)|%(color:green)%(authorname)%(color:reset)|%(color:yellow)%(objectname:short)%(color:reset)|%(refname:short)|%(upstream:short)' \
+        \"$args\" \
+        --sort=-committerdate \
+    ); \
+    line_number=1; \
+    echo \"$branches_with_tracking\" | while IFS= read -r branch_with_tracking; do \
+      branch_name=$(echo \"$branches\" | sed -n \"${line_number}p\"); \
+      if [ \"$branch_name\" = \"$current_branch\" ]; then \
+        branch_with_line_number=\"▶︎|$branch_with_tracking\"; \
+      else \
+        branch_with_line_number=\"$line_number|$branch_with_tracking\"; \
+      fi; \
+      echo \"$branch_with_line_number\" | awk '{\
         if (substr($NF, length($NF)) == \"-\") {\
-          print \"  \" NR \"|\" substr($0, 1, length($0) - 1); \
+          print \"  \" substr($0, 1, length($0) - 1); \
         } else {\
-          print \"⦿ \" NR \"|\" $0; \
+          print \"⦿ \" $0; \
         }\
-    }' \
+      }'; \
+      line_number=$((line_number + 1)); \
+    done \
     | column -ts'|'; \
   }; f"
 
