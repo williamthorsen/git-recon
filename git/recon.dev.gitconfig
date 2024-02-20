@@ -61,7 +61,7 @@
     branches_with_tracking=$(\
       git with-tracking \
         --color=always \
-        --format='%(color:blue)%(committerdate:format:%a %Y-%b-%d %H:%M)%(color:reset)|%(color:green)%(authorname)%(color:reset)|%(color:yellow)%(objectname:short)%(color:reset)|%(refname:short)|%(upstream:short)' \
+        --format='%(color:blue)%(committerdate:format:%a %Y-%b-%d %H:%M)%(color:reset)|%(color:green)%(authorname)%(color:reset)|%(color:yellow)%(objectname:short)%(color:reset)|%(refname:short)|%(upstream:remotename)' \
         \"$@\" \
     ); \
     line_number=1; \
@@ -113,7 +113,7 @@
       git for-each-ref \
         --color=always \
         refs/remotes/ \
-        --format='%(color:blue)%(committerdate:format:%a %Y-%b-%d %H:%M)%(color:reset)|%(color:green)%(authorname)%(color:reset)|%(color:yellow)%(objectname:short)%(color:reset)|%(refname:short)' \
+        --format='%(color:blue)%(committerdate:format:%a %Y-%b-%d %H:%M)%(color:reset)|%(color:green)%(authorname)%(color:reset)|%(color:yellow)%(objectname:short)%(color:reset)|%(refname:short)|#local#' \
         \"$@\" \
     ); \
     line_number=1; \
@@ -126,7 +126,9 @@
       ); \
       : 'Assume there is no tracking branch'; \
       branch_with_line_number=\"$line_number|$remote_branch\"; \
+      has_tracking_branch=false; \
       if [ -n \"$local_branch_with_tracking\" ]; then \
+        has_tracking_branch=true; \
         local_branch_name=$(echo \"$local_branch_with_tracking\" | awk '{print $2}'); \
         tracking=$(echo \"$local_branch_with_tracking\" | awk '{print $3}'); \
         if [ \"$local_branch_name\" = \"$current_branch\" ]; then \
@@ -135,8 +137,9 @@
           branch_with_line_number=\"$line_number|$remote_branch $tracking\"; \
         fi; \
       else \
-        if [ \"$remote_branch_name\" = \"HEAD\" ]; then \
-          branch_with_line_number=\"$line_number|$remote_branch [@default]\"; \
+        if [[ \"$remote_branch_name\" == */HEAD ]]; then \
+          remote_branch_with_default=$(echo \"$remote_branch\" | sed \"s|$remote_branch_name|$remote_branch_name [default branch]|\") \
+          branch_with_line_number=\"$line_number|$remote_branch_with_default\"; \
         fi; \
       fi; \
       slash_count=$(echo \"$remote_branch_name\" | awk -F/ '{print NF-1}'); \
@@ -144,14 +147,27 @@
         : 'Disabled resolution of default branch because it is a slow operation'; \
         : 'default_branch_name=$(git default-branch $remote_branch_name)'; \
         : 'branch_with_line_number=\"$line_number|$remote_branch => ${remote_branch_name}/${default_branch_name}\"'; \
-        branch_with_line_number=\"$line_number|$remote_branch \\033[90m[default branch]\\033[0m\"; \
+        remote_branch_with_default=$(echo \"$remote_branch\" | sed \"s|$remote_branch_name|$remote_branch_name [default branch]|\") \
+        branch_with_line_number=\"$line_number|$remote_branch_with_default\"; \
       fi; \
       : 'Prepend ⦿ if branch has a tracking branch'; \
       if [ -n \"$local_branch_with_tracking\" ]; then \
-        echo \"⦿ $branch_with_line_number\"; \
+        output=\"⦿ $branch_with_line_number\"; \
       else \
-        echo \"  $branch_with_line_number\"; \
+        output=\"  $branch_with_line_number\"; \
       fi; \
+      if [[ \"$has_tracking_branch\" == \"false\" ]]; then \
+        output=$(\
+          echo \"$output\" \
+          | sed 's/|#local#$/|/' \
+          | sed 's/|#local#|/| |/' \
+        ); \
+      else \
+        output=$(\
+          echo \"$output\" | sed 's/#local#/local/' \
+        ); \
+      fi; \
+      echo \"$output\"; \
       line_number=$((line_number + 1)); \
     done \
     | column -ts'|'; \

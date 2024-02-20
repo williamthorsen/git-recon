@@ -164,7 +164,7 @@ describe "list-recent-branches"; (
 
 describe "recent"; (
   ( it "prepends a fisheye, space, and the row number to tracking branches"
-    pattern="^⦿ [0-9]+.*main \S+" # Any non-empty string is tracking information
+    pattern="^⦿ ([0-9]+|▶︎).* main.* origin \S+$" # Any non-empty string is tracking information
 
     lines=$(devGit recent)
 
