@@ -61,7 +61,7 @@
     branches_with_tracking=$(\
       git with-tracking \
         --color=always \
-        --format='%(color:blue)%(committerdate:format:%a %Y-%b-%d %H:%M)%(color:reset)|%(color:green)%(authorname)%(color:reset)|%(color:yellow)%(objectname:short)%(color:reset)|%(refname:short)|%(upstream:remotename)' \
+        --format='%(color:blue)%(committerdate:format:%a %Y-%b-%d %H:%M)%(color:reset)|%(color:green)%(authorname)%(color:reset)|%(color:yellow)%(objectname:short)%(color:reset)|%(refname:short)|%(upstream:remotename)|' \
         \"$@\" \
     ); \
     line_number=1; \
@@ -185,7 +185,7 @@
     | sed -e 's/\\[ahead \\([0-9]*\\)\\]/\\\\033[32m↑\\1\\\\033[0m/g' \
     | sed -e 's/\\[ahead \\([0-9]*\\), behind \\([0-9]*\\)\\]/\\\\033[32m↑\\1\\\\033[0m\\\\033[31m↓\\2\\\\033[0m/g' \
     | sed -e 's/\\[behind \\([0-9]*\\)\\]/\\\\033[31m↓\\1\\\\033[0m/g' \
-    | sed 's/\\[gone\\]/⚠️/g' \
+    | sed -e $'s/\\[gone\\]/\\033[37m-×-\\033[0m/g' \
     | sed -e $'s/\\[synced\\]/\\033[32m✔\\033[0m/g'; \
   }; f"
 
@@ -204,11 +204,12 @@
       --count=$count \
       \"$@\" \
       --sort=-committerdate; \
+    git warn-if-dirty; \
   }; f"
 
   recent-legend = "!f() { \
     echo \"Legend: ▶︎ current branch\"; \
-    echo \"        ⦿ tracking branch | \\033[32m↑ commits ahead\\033[0m | \\033[31m↓ commits behind\\033[0m | \\033[32m✔\\033[0m up to date | ⚠️ upstream gone\"; \
+    echo \"        ⦿ tracking branch | \\033[32m↑ commits ahead\\033[0m | \\033[31m↓ commits behind\\033[0m | \\033[32m✔\\033[0m up to date | \\033[37m-×-\\033[0m upstream gone\"; \
   }; f"
 
   recent-usage = "!f() { \
@@ -228,9 +229,6 @@
       return 0; \
     fi; \
     git recent \"$@\"; \
-    if ! git diff --quiet || ! git diff --staged --quiet; then \
-      echo 'Warning: Working directory has uncommitted changes.'; \
-    fi; \
     printf \"Enter branch number to check out branch, [h] for help, or [Enter] to quit: \"; \
     read input; \
     case $input in \
@@ -267,6 +265,7 @@
       --count=$count \
       \"$@\" \
       --sort=-committerdate; \
+    git warn-if-dirty; \
   }; f"
 
   recent-remote-legend = "!f() { \
@@ -296,9 +295,6 @@
       count=$1; \
     fi; \
     git recent-remote --count=$count \"$@\"; \
-    if ! git diff --quiet || ! git diff --staged --quiet; then \
-      echo 'Warning: Working directory has uncommitted changes.'; \
-    fi; \
     printf \"Enter branch number to check out branch, [h] for help, or [Enter] to quit: \"; \
     read input; \
     case $input in \
@@ -309,6 +305,7 @@
     git checkout-nth-remote $input; \
   }; f"
 
+  # Shows usage message for `git recent-remote-prompt`
   recent-remote-prompt-usage = "!f() { \
     echo \"Usage:  git recent-remote-prompt [<count=10>] [<for-each-ref-args>]\"; \
     echo \"        git recent-remote-prompt help\"; \
@@ -317,6 +314,13 @@
     echo \"        - help                  # Displays this help message\"; \
     echo \"Alias:  git recon-r\"; \
     git recent-remote-legend; \
+  }; f"
+
+  # Warns if the working directory has uncommitted changes
+  warn-if-dirty = "!f() {\
+    if ! git diff --quiet || ! git diff --staged --quiet; then \
+      echo '⚠️ Working directory has uncommitted changes.'; \
+    fi; \
   }; f"
 
   # Appends tracking information to each line of the output of the original command
