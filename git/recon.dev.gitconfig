@@ -228,6 +228,9 @@
       return 0; \
     fi; \
     git recent \"$@\"; \
+    if ! git diff --quiet || ! git diff --staged --quiet; then \
+      echo 'Warning: Working directory has uncommitted changes.'; \
+    fi; \
     printf \"Enter branch number to check out branch, [h] for help, or [Enter] to quit: \"; \
     read input; \
     case $input in \
@@ -276,7 +279,7 @@
     echo \"Usage:  git recent-remote [<count=10>] [<for-each-ref-args>]\"; \
     echo \"        git recent-remote help\"; \
     echo \"        - <count=10>            # Number of branches to display\"; \
-    echo \"        - <for-each-ref-args>   # Any of the standard args accepted by 'git for-each-ref'\"; \
+    echo \"        - <for-each-ref-args>   # Any arguments accepted by 'git for-each-ref'\"; \
     echo \"        - help                  # Displays this help message\"; \
     echo \"Alias:  git recent-r\"; \
     git recent-remote-legend; \
@@ -293,6 +296,9 @@
       count=$1; \
     fi; \
     git recent-remote --count=$count \"$@\"; \
+    if ! git diff --quiet || ! git diff --staged --quiet; then \
+      echo 'Warning: Working directory has uncommitted changes.'; \
+    fi; \
     printf \"Enter branch number to check out branch, [h] for help, or [Enter] to quit: \"; \
     read input; \
     case $input in \
