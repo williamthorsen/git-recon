@@ -61,7 +61,7 @@
     branches_with_tracking=$(\
       git with-tracking \
         --color=always \
-        --format='%(color:blue)%(committerdate:format:%a %Y-%b-%d %H:%M)%(color:reset)|%(color:green)%(authorname)%(color:reset)|%(color:yellow)%(objectname:short)%(color:reset)|%(refname:short)|%(upstream:short)' \
+        --format='%(color:blue)%(committerdate:format:%a %Y-%b-%d %H:%M)%(color:reset)|%(color:green)%(authorname)%(color:reset)|%(color:yellow)%(objectname:short)%(color:reset)|%(refname:short)|%(upstream:remotename)' \
         \"$@\" \
     ); \
     line_number=1; \
@@ -113,7 +113,7 @@
       git for-each-ref \
         --color=always \
         refs/remotes/ \
-        --format='%(color:blue)%(committerdate:format:%a %Y-%b-%d %H:%M)%(color:reset)|%(color:green)%(authorname)%(color:reset)|%(color:yellow)%(objectname:short)%(color:reset)|%(refname:short)' \
+        --format='%(color:blue)%(committerdate:format:%a %Y-%b-%d %H:%M)%(color:reset)|%(color:green)%(authorname)%(color:reset)|%(color:yellow)%(objectname:short)%(color:reset)|%(refname:short)|local' \
         \"$@\" \
     ); \
     line_number=1; \
@@ -156,6 +156,8 @@
       fi; \
       line_number=$((line_number + 1)); \
     done \
+    : 'Special handling for the local tracking indicator when it is in last column.'; \
+    | sed 's/|local$//' \
     | column -ts'|'; \
   }; f"
 
