@@ -135,8 +135,8 @@
           branch_with_line_number=\"$line_number|$remote_branch $tracking\"; \
         fi; \
       else \
-        if [ \"$remote_branch_name\" = \"HEAD\" ]; then \
-          branch_with_line_number=\"$line_number|$remote_branch [@default]\"; \
+        if [[ \"$remote_branch_name\" == */HEAD ]]; then \
+          branch_with_line_number=\"$line_number|$remote_branch \\033[90m[default branch]\\033[0m\"; \
         fi; \
       fi; \
       slash_count=$(echo \"$remote_branch_name\" | awk -F/ '{print NF-1}'); \
