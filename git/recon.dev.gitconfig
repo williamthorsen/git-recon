@@ -136,7 +136,8 @@
         fi; \
       else \
         if [[ \"$remote_branch_name\" == */HEAD ]]; then \
-          branch_with_line_number=\"$line_number|$remote_branch \\033[90m[default branch]\\033[0m\"; \
+          remote_branch_with_default=$(echo \"$remote_branch\" | sed \"s|$remote_branch_name|$remote_branch_name [default branch]|\") \
+          branch_with_line_number=\"$line_number|$remote_branch_with_default\"; \
         fi; \
       fi; \
       slash_count=$(echo \"$remote_branch_name\" | awk -F/ '{print NF-1}'); \
@@ -144,7 +145,8 @@
         : 'Disabled resolution of default branch because it is a slow operation'; \
         : 'default_branch_name=$(git default-branch $remote_branch_name)'; \
         : 'branch_with_line_number=\"$line_number|$remote_branch => ${remote_branch_name}/${default_branch_name}\"'; \
-        branch_with_line_number=\"$line_number|$remote_branch \\033[90m[default branch]\\033[0m\"; \
+        remote_branch_with_default=$(echo \"$remote_branch\" | sed \"s|$remote_branch_name|$remote_branch_name [default branch]|\") \
+        branch_with_line_number=\"$line_number|$remote_branch_with_default\"; \
       fi; \
       : 'Prepend ⦿ if branch has a tracking branch'; \
       if [ -n \"$local_branch_with_tracking\" ]; then \
