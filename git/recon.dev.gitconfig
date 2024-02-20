@@ -113,7 +113,7 @@
       git for-each-ref \
         --color=always \
         refs/remotes/ \
-        --format='%(color:blue)%(committerdate:format:%a %Y-%b-%d %H:%M)%(color:reset)|%(color:green)%(authorname)%(color:reset)|%(color:yellow)%(objectname:short)%(color:reset)|%(refname:short)|local' \
+        --format='%(color:blue)%(committerdate:format:%a %Y-%b-%d %H:%M)%(color:reset)|%(color:green)%(authorname)%(color:reset)|%(color:yellow)%(objectname:short)%(color:reset)|%(refname:short)|#local#' \
         \"$@\" \
     ); \
     line_number=1; \
@@ -126,7 +126,9 @@
       ); \
       : 'Assume there is no tracking branch'; \
       branch_with_line_number=\"$line_number|$remote_branch\"; \
+      has_tracking_branch=false; \
       if [ -n \"$local_branch_with_tracking\" ]; then \
+        has_tracking_branch=true; \
         local_branch_name=$(echo \"$local_branch_with_tracking\" | awk '{print $2}'); \
         tracking=$(echo \"$local_branch_with_tracking\" | awk '{print $3}'); \
         if [ \"$local_branch_name\" = \"$current_branch\" ]; then \
@@ -150,14 +152,24 @@
       fi; \
       : 'Prepend ⦿ if branch has a tracking branch'; \
       if [ -n \"$local_branch_with_tracking\" ]; then \
-        echo \"⦿ $branch_with_line_number\"; \
+        output=\"⦿ $branch_with_line_number\"; \
       else \
-        echo \"  $branch_with_line_number\"; \
+        output=\"  $branch_with_line_number\"; \
       fi; \
+      if [[ \"$has_tracking_branch\" == \"false\" ]]; then \
+        output=$(\
+          echo \"$output\" \
+          | sed 's/|#local#$/|/' \
+          | sed 's/|#local#|/| |/' \
+        ); \
+      else \
+        output=$(\
+          echo \"$output\" | sed 's/#local#/local/' \
+        ); \
+      fi; \
+      echo \"$output\"; \
       line_number=$((line_number + 1)); \
     done \
-    : 'Special handling for the local tracking indicator when it is in last column.'; \
-    | sed 's/|local$//' \
     | column -ts'|'; \
   }; f"
 
