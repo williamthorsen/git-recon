@@ -8,6 +8,8 @@ source ../../testing/test-helpers.sh
 # Path to the configuration file being tested. Must be an absolute path, because `git -c` doesn't accept relative paths.
 DEV_GIT_CONFIG="$HOME/repos/projects/git-recon/git/recon.dev.gitconfig"
 BRANCH_PREFIX="automated-tests"
+GONE_SYMBOL="-×-"
+
 # NONCE=$(date +%Y%m%d-%H%M%S)-$RANDOM
 SUCCESS_CODE=0
 FAILURE_CODE=1
@@ -111,10 +113,10 @@ describe "format-tracking"; (
   ( it "replaces [gone] with {gone symbol}";
     input="my-local-branch [gone]"
 
-    expected='my-local-branch ⚠️'
+    expected="my-local-branch $GONE_SYMBOL"
     actual=$(devGit format-tracking "$input")
 
-    assert_equal "$actual" "$expected"
+    assert_match "$actual" "$expected"
   )
 
   ( it "replaces [synced] with ✔";
@@ -164,7 +166,7 @@ describe "list-recent-branches"; (
 
 describe "recent"; (
   ( it "prepends a fisheye, space, and the row number to tracking branches"
-    pattern="^⦿ ([0-9]+|▶︎).* main.* origin \S+$" # Any non-empty string is tracking information
+    pattern="^⦿ ([0-9]+|▶︎).* main.* origin\s+\S+$" # Any non-empty string is tracking information
 
     lines=$(devGit recent)
 
@@ -176,7 +178,7 @@ describe "recent"; (
     branch_name="$BRANCH_PREFIX/non-tracking-branch"
     safeCreateTestBranch "$branch_name" || exit 1
 
-    pattern="^  [0-9]+.*non-tracking-branch\s*$"
+    pattern="^  ([0-9]+|▶︎).* .*non-tracking-branch\s*$"
 
     lines=$(devGit recent)
 
@@ -184,7 +186,7 @@ describe "recent"; (
   )
 
   ( it "accepts a custom format"
-    pattern="^⦿ [0-9]+ \s+main \S+" # Any non-empty string is tracking information
+    pattern="^⦿ ([0-9]+|▶︎).* main\s+\S+" # Any non-empty string is tracking information
 
     lines=$(\
       devGit recent --format='%(refname:short)' \

@@ -86,6 +86,15 @@
 
   # Same as `git decorated`, but for remote branches
   decorated-remote = "!f() {\
+    refs='refs/remotes/'; \
+    args=(); \
+    for arg in \"$@\"; do \
+      if [[ $arg == refs/remotes/* ]]; then \
+        refs=$arg; \
+      else \
+        args+=(\"$arg\"); \
+      fi; \
+    done; \
     current_branch=$(git branch --show-current); \
     : 'Get a list of all local tracking branches, filtering out those whose name is not an exact match'; \
     local_branches_with_tracking=$(\
@@ -104,22 +113,25 @@
     : 'We need this because we do not know where in the output the branch name will appear'; \
     remote_branch_names=$(\
       git for-each-ref \
-        refs/remotes/ \
-        \"$@\" \
-        --format='%(refname:short)' refs/remotes/ \
+        $refs \
+        \"${args[@]}\" \
+        --format='%(refname:short)' $refs \
     ); \
     : 'The full remote branch information'; \
     remote_branches=$( \
       git for-each-ref \
         --color=always \
-        refs/remotes/ \
+        $refs \
         --format='%(color:blue)%(committerdate:format:%a %Y-%b-%d %H:%M)%(color:reset)|%(color:green)%(authorname)%(color:reset)|%(color:yellow)%(objectname:short)%(color:reset)|%(refname:short)|#local#' \
-        \"$@\" \
+        \"${args[@]}\" \
     ); \
     line_number=1; \
     echo \"$remote_branches\" | while IFS= read -r remote_branch; do \
       : 'Get the name of this branch'; \
       remote_branch_name=$(echo \"$remote_branch_names\" | sed -n \"${line_number}p\"); \
+      if [ -z \"$remote_branch_name\" ]; then \
+        continue; \
+      fi; \
       : 'Find the local branch mapped to this branch'; \
       local_branch_with_tracking=$(\
         echo \"$local_branches_with_tracking\" | awk -v name=\"$remote_branch_name\" '$1 == name {print $0}' \
@@ -152,22 +164,22 @@
       fi; \
       : 'Prepend ⦿ if branch has a tracking branch'; \
       if [ -n \"$local_branch_with_tracking\" ]; then \
-        output=\"⦿ $branch_with_line_number\"; \
+        row=\"⦿ $branch_with_line_number\"; \
       else \
-        output=\"  $branch_with_line_number\"; \
+        row=\"  $branch_with_line_number\"; \
       fi; \
       if [[ \"$has_tracking_branch\" == \"false\" ]]; then \
-        output=$(\
-          echo \"$output\" \
+        row=$(\
+          echo \"$row\" \
           | sed 's/|#local#$/|/' \
           | sed 's/|#local#|/| |/' \
         ); \
       else \
-        output=$(\
-          echo \"$output\" | sed 's/#local#/local/' \
+        row=$(\
+          echo \"$row\" | sed 's/#local#/local/' \
         ); \
       fi; \
-      echo \"$output\"; \
+      echo \"$row\"; \
       line_number=$((line_number + 1)); \
     done \
     | column -ts'|'; \
@@ -177,6 +189,18 @@
   default-branch = "!f() {\
     remote=${1:-origin}; \
     git remote show $remote | grep 'HEAD branch' | awk '{print $NF}'; \
+  }; f"
+
+  extract-refs = "!f() {\
+    refs=; \
+    other_args=(); \
+    for arg in \"$@\"; do \
+      case $arg in \
+        refs/remotes/*) refs=$arg ;; \
+        *) other_args+=("$arg") ;; \
+      esac; \
+    done; \
+    echo \"$refs ${other_args[@]}\"; \
   }; f"
 
   # Replaces tracking information from `git for-each-ref --format='%(upstream:track)'` with colour-coded symbols
