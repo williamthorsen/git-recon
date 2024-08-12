@@ -1,4 +1,8 @@
+# IDE and editor files
 .idea/
+.vscode
+*.suo
+*.sw?
 
 # local-only files
 local/
@@ -8,3 +12,7 @@ node_modules/
 
 # OS files
 .DS_Store
+Thumbs.db
+
+# Allow .gitkeep to prevent otherwise empty directories from being deleted
+!.gitkeep
