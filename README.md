@@ -2,8 +2,8 @@
 
 ## Configuration files
 
-- `recon.gitconfig`: Stable git configuration.
-- `recon.dev.gitconfig`: Development git configuration.
+- `git-recon.gitconfig`: Stable git configuration.
+- `git-recon.dev.gitconfig`: Development git configuration.
 
 ## Installation
 
@@ -12,5 +12,5 @@
 
 ```ini
 [include]
-    path = /path/to/recon.gitconfig
+    path = /path/to/git-recon.gitconfig
 ```
