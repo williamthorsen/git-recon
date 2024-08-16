@@ -14,7 +14,7 @@ install_config() {
     else
       echo "Adding Git-Recon configuration to $GITCONFIG_PATH..."
       sed -i '' "/\[include\]/ a\\
-      path = $GIT_RECON_CONFIG_PATH
+      \ \ \ \ path = $GIT_RECON_CONFIG_PATH
       " "$GITCONFIG_PATH" || echo -e "$INCLUDE_SECTION" >> "$GITCONFIG_PATH"
     fi
   else
