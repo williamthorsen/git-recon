@@ -41,6 +41,7 @@ assert_file_contains() {
 
   actual_content=$(cat "$file_path")
   if ! grep -q -F "$expected_content" <<< "$actual_content"; then
+    count_failure
     echo "  Expected file to contain: $expected_content"
     echo "  Actual file content: $actual_content"
     return 1
@@ -146,8 +147,10 @@ it() {
 
 on_teardown () {
   report_errors
+  local status=$?
   rm "$error_pipe"
   rm "$last_suite_name_file"
+  exit $status
 }
 
 on_test_completion () {
