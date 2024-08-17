@@ -1,0 +1,6 @@
+[include]
+    path = /usr/local/etc/gitconfig.d/git-recon.gitconfig
+    path = /path/to/some.gitconfig
+[user]
+    name = John Doe
+    email = "jdoe@example.com"

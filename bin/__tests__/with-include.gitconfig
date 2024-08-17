@@ -1,0 +1,4 @@
+[include]
+[user]
+    name = John Doe
+    email = "jdoe@example.com"

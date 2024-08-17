@@ -1,0 +1,5 @@
+[include]
+    path = /path/to/some.gitconfig
+[user]
+    name = John Doe
+    email = "jdoe@example.com"

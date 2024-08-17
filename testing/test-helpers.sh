@@ -34,6 +34,20 @@ assert_equal() {
   fi
 }
 
+# Check whether the file contains the expected content
+assert_file_contains() {
+  local file_path=$1
+  local expected_content=$2
+
+  actual_content=$(cat "$file_path")
+  if ! grep -q -F "$expected_content" <<< "$actual_content"; then
+    echo "  Expected file to contain: $expected_content"
+    echo "  Actual file content: $actual_content"
+    return 1
+  fi
+  return 0
+}
+
 assert_match() {
   local actual=$1
   local pattern=$2
