@@ -134,6 +134,10 @@ describe_test() {
   printf "▶︎ it $test_name "
 }
 
+generate_timestamp() {
+  date +"%Y-%m-%d-%H%M%S"
+}
+
 it() {
   set_up_test "$1"
   describe_suite_on_first_test
