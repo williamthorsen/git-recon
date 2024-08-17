@@ -34,6 +34,21 @@ assert_equal() {
   fi
 }
 
+# Check whether the file contains the expected content
+assert_file_contains() {
+  local file_path=$1
+  local expected_content=$2
+
+  actual_content=$(cat "$file_path")
+  if ! grep -q -F "$expected_content" <<< "$actual_content"; then
+    count_failure
+    echo "  Expected file to contain: $expected_content"
+    echo "  Actual file content: $actual_content"
+    return 1
+  fi
+  return 0
+}
+
 assert_match() {
   local actual=$1
   local pattern=$2
@@ -120,6 +135,10 @@ describe_test() {
   printf "▶︎ it $test_name "
 }
 
+generate_timestamp() {
+  date +"%Y-%m-%d-%H%M%S"
+}
+
 it() {
   set_up_test "$1"
   describe_suite_on_first_test
@@ -128,8 +147,10 @@ it() {
 
 on_teardown () {
   report_errors
+  local status=$?
   rm "$error_pipe"
   rm "$last_suite_name_file"
+  exit $status
 }
 
 on_test_completion () {
