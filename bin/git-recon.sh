@@ -19,6 +19,7 @@ install_config() {
       exit 0
     fi
     if grep -q "^\[include\]" "$GITCONFIG_PATH"; then
+      printf "Found [include] section\n"
       sed -i '' "/\[include\]/ a\\
 $(printf '    ')path = $GIT_RECON_CONFIG_PATH
 " "$GITCONFIG_PATH"

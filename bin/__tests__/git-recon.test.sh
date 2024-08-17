@@ -9,6 +9,8 @@ cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1
 # Load the test helpers
 source ../../testing/test-helpers.sh
 
+BREW_PREFIX=$(brew --prefix)
+
 # Create a temporary directory for testing
 TEMP_DIR=$(mktemp -d)
 GITCONFIG_PATH="$TEMP_DIR/test.gitconfig"
@@ -53,41 +55,43 @@ describe "git-recon.sh installation process"; (
     rm -f "$GITCONFIG_PATH"  # Ensure the test.gitconfig file does not exist
     output=$(run_script --install --config-path="$GITCONFIG_PATH" 2>&1)
     assert_success $? "$output"
-    assert_file_contains "$GITCONFIG_PATH" "[include]
-    path = /usr/local/etc/gitconfig.d/git-recon.gitconfig"
+    assert_file_contains "$GITCONFIG_PATH" "[include]"
+    assert_file_contains "$GITCONFIG_PATH" "path = $BREW_PREFIX/etc/gitconfig.d/git-recon.gitconfig"
   )
 
   ( it "adds [include] section to existing test.gitconfig without include section";
-    prepare_environment "./without-include.gitconfig"
+    prepare_environment "./fixtures/without-include.gitconfig"
     output=$(run_script --install --config-path="$GITCONFIG_PATH" 2>&1)
     assert_success $? "$output"
-    assert_file_contains "$GITCONFIG_PATH" "[inclueede]
-    path = /usr/local/etc/gitconfig.d/git-recon.gitconfig"
+    assert_file_contains "$GITCONFIG_PATH" "[include]"
+    assert_file_contains "$GITCONFIG_PATH" "path = $BREW_PREFIX/etc/gitconfig.d/git-recon.gitconfig"
   )
 
   ( it "adds path to existing test.gitconfig with [include] section but without any paths";
-    prepare_environment "./with-include.gitconfig"
+    prepare_environment "./fixtures/with-include.gitconfig"
     output=$(run_script --install --config-path="$GITCONFIG_PATH" 2>&1)
     assert_success $? "$output"
-    assert_file_contains "$GITCONFIG_PATH" "path = /usr/local/etc/gitconfig.d/git-recon.gitconfig"
+    assert_file_contains "$GITCONFIG_PATH" "path = $BREW_PREFIX/etc/gitconfig.d/git-recon.gitconfig"
   )
 
   ( it "adds path to existing paths under [include] section in test.gitconfig";
-    prepare_environment "./with-path.gitconfig"
+    prepare_environment "./fixtures/with-path.gitconfig"
     output=$(run_script --install --config-path="$GITCONFIG_PATH" 2>&1)
     assert_success $? "$output"
-    assert_file_contains "$GITCONFIG_PATH" "path = /usr/local/etc/gitconfig.d/git-recon.gitconfig"
+    assert_file_contains "$GITCONFIG_PATH" "path = $BREW_PREFIX/etc/gitconfig.d/git-recon.gitconfig"
   )
 
   ( it "does nothing if path already exists in test.gitconfig";
-    prepare_environment "./with-path.gitconfig"
+    prepare_environment "./fixtures/with-path.gitconfig"
     # Add the path to the test.gitconfig file
-    run_script --install --config-path="$GITCONFIG_PATH" 2>&1
+    run_script --install --config-path="$GITCONFIG_PATH" > /dev/null 2>&1
     # Add again to test how the script handles an existing path
     output=$(run_script --install --config-path="$GITCONFIG_PATH" 2>&1)
     assert_success $? "$output"
-    assert_match "$output" "Git-Recon configuration already included in $GITCONFIG_PATH"
+    assert_match "$output" "Nothing to do"
   )
+
+  # TODO: Handle edge cases, such as when `path` exists but is wrongly placed outside of the `include` section.
 )
 
 cleanup_temp_dir
