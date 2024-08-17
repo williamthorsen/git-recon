@@ -9,28 +9,40 @@ GIT_RECON_CONFIG_PATH="$BREW_PREFIX/etc/gitconfig.d/git-recon.gitconfig"
 INCLUDE_SECTION="[include]\n    path = $GIT_RECON_CONFIG_PATH\n"
 
 install_config() {
+  echo "Starting installation of Git-Recon configuration..."
+
   if [ -f "$GITCONFIG_PATH" ]; then
     if grep -q "$GIT_RECON_CONFIG_PATH" "$GITCONFIG_PATH"; then
-      echo "Git-Recon configuration already included in $GITCONFIG_PATH"
-    elif grep -q "^\[include\]" "$GITCONFIG_PATH"; then
-      echo "Adding Git-Recon configuration to $GITCONFIG_PATH..."
+      echo "Nothing to do. Git-Recon configuration is already included in $GITCONFIG_PATH."
+      echo "Done."
+      exit 0
+    fi
+    echo "Modifying $GITCONFIG_PATH..."
+    if grep -q "^\[include\]" "$GITCONFIG_PATH"; then
       sed -i '' "/\[include\]/ a\\
 $(printf '    ')path = $GIT_RECON_CONFIG_PATH
 " "$GITCONFIG_PATH"
     else
-      echo "Adding new [include] section with Git-Recon configuration to $GITCONFIG_PATH..."
       printf "\n[include]\n    path = %s\n" "$GIT_RECON_CONFIG_PATH" >> "$GITCONFIG_PATH"
+      echo "Added [include] section."
     fi
+    echo "Added Git-Recon configuration path: $GIT_RECON_CONFIG_PATH..."
   else
-    echo "Creating $GITCONFIG_PATH with Git-Recon configuration"
     echo -e "$INCLUDE_SECTION" > "$GITCONFIG_PATH"
+    echo "Created $GITCONFIG_PATH with Git-Recon configuration."
   fi
+
+  echo "Git-Recon configuration path was successfully added to $GITCONFIG_PATH."
+  echo "Done."
 }
 
 usage() {
-  echo "Usage: git-recon --install [--config-path=/path/to/.gitconfig]"
+  echo "Usage: git-recon --install [--config-path=PATH]"
+  echo "  --install                Install the Git-Recon configuration."
+  echo "  --config-path=PATH       Specify the path to the .gitconfig file. Defaults to ~/.gitconfig."
   exit 1
 }
+
 
 while [[ "$#" -gt 0 ]]; do
   case "$1" in
@@ -41,6 +53,7 @@ while [[ "$#" -gt 0 ]]; do
       GITCONFIG_PATH="${1#*=}"
       ;;
     *)
+      echo "Error: Invalid option '$1'"
       usage
       ;;
   esac
@@ -50,5 +63,6 @@ done
 if [ "$ACTION" = "install" ]; then
   install_config
 else
+  echo "Error: No action specified."
   usage
 fi
