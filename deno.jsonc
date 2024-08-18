@@ -1,0 +1,31 @@
+/* @link https://deno.com/manual/getting_started/configuration_file */
+{
+  '$schema': 'https://deno.land/x/deno/cli/schemas/config-file.v1.json',
+  fmt: {
+    exclude: [
+      '**/deno.jsonc', // excluded so that JSON5 formatting is preserved; otherwise, deno fmt would format as JSONC
+      '**/local/',
+      '**/*.json'
+    ],
+    lineWidth: 120,
+    proseWrap: 'preserve',
+    singleQuote: true
+  },
+  lint: {
+    exclude: [
+      '**/deno.jsonc',
+      '**/local/',
+      '**/*.json'
+    ]
+  },
+  tasks: {
+    // Creates a release on GitHub using the version number from `metadata.ts`
+    'create-release': 'scripts/create-release.sh',
+    // Adds an annotated Git tag containing the version number from `metadata.ts` to the current commit
+    'create-release-tag': 'scripts/create-release-tag.sh',
+    'test': 'scripts/run-all-tests.sh',
+    'test:install': 'bin/__tests__/git-recon.test.sh',
+    'test:quick': 'git/__tests__/recon-quick.test.sh',
+    'test:recon': 'git/__tests__/recon.config.test.sh'
+  },
+}

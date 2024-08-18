@@ -42,4 +42,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.7.3] - 2024-08-16
 
 ### Added
+
 - Initial implementation of core features.
