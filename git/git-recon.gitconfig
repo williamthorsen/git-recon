@@ -1,6 +1,7 @@
 [alias]
   # Utility function. Returns branch name and, if a tracking branch, the tracked branch name & tracking status.
   # Most useful as a helper for `with-tracking`
+  # @private
   branches-with-tracking = "!f() { \
     git for-each-ref \"$@\" --format='%(refname:short) %(upstream:short) %(upstream:track)' refs/heads \
     | awk '{if ($2 != \"\" && $3 == \"\") $3 = \"[synced]\"; print}'; \
@@ -51,6 +52,7 @@
   }; f"
 
   # Decorates the output of `git for-each-ref` with a tracking symbol, line no., current branch marker & tracking status
+  # @private
   decorated = "!f() { \
     current_branch=$(git branch --show-current); \
     branches=$(\
@@ -192,11 +194,13 @@
   }; f"
 
   # Defines color codes
+  # @private
   define-colors = "!f() { \
     echo \"GREEN=\\033[32m RED=\\033[31m WHITE=\\033[37m RESET=\\033[0m\"; \
   }; f"
 
   # Defines symbols
+  # @private
   define-symbols = "!f() { \
     echo \"GIT_RECON_UP_TO_DATE=✔\"; \
     echo \"GIT_RECON_NO_UPSTREAM=-×-\"; \
@@ -204,6 +208,7 @@
     : echo \"GIT_RECON_NO_UPSTREAM=[gone]\"; \
   }; f"
 
+  # @private
   extract-refs = "!f() { \
     refs=; \
     other_args=(); \
@@ -217,6 +222,7 @@
   }; f"
 
   # Replaces tracking information from `git for-each-ref --format='%(upstream:track)'` with colour-coded symbols
+  # @private
   format-tracking = "!f() { \
     eval $(git define-colors); \
     eval $(git define-symbols); \
@@ -246,6 +252,7 @@
     git warn-if-dirty; \
   }; f"
 
+  # @private
   recent-legend = "!f() { \
     eval $(git define-colors); \
     eval $(git define-symbols); \
@@ -253,6 +260,7 @@
     echo \"        ⦿ tracking branch | ${GREEN}↑ commits ahead${RESET} | ${RED}↓ commits behind${RESET} | ${GREEN}${GIT_RECON_UP_TO_DATE}${RESET} up to date | ${WHITE}${GIT_RECON_NO_UPSTREAM}${RESET} upstream gone\"; \
   }; f"
 
+  # @private
   recent-usage = "!f() { \
     echo \"Lists recent branches.\"; \
     echo \"Usage:  git recent [<count=10>] [<for-each-ref-args>]\"; \
@@ -280,6 +288,7 @@
     git checkout-nth $input; \
   }; f"
 
+  # @private
   recent-prompt-usage = "!f() { \
     echo \"Lists recent branches and prompts to check out a branch.\"; \
     echo \"Usage:  git recent-prompt [<count=10>] [<for-each-ref-args>]\"; \
@@ -309,6 +318,7 @@
     git warn-if-dirty; \
   }; f"
 
+  # @private
   recent-remote-legend = "!f() { \
     eval $(git define-colors); \
     eval $(git define-symbols); \
@@ -316,6 +326,7 @@
     echo \"        ⦿ has local tracking branch | ${GREEN}↑ commits ahead${RESET} | ${RED}↓ commits behind${RESET} | ${GREEN}${GIT_RECON_UP_TO_DATE}${RESET} up to date\"; \
   }; f"
 
+  # @private
   recent-remote-usage = "!f() { \
     echo \"Lists recent remote branches.\"; \
     echo \"Usage:  git recent-remote [<count=10>] [<for-each-ref-args>]\"; \
@@ -349,6 +360,7 @@
   }; f"
 
   # Shows usage message for `git recent-remote-prompt`
+  # @private
   recent-remote-prompt-usage = "!f() { \
     echo \"Usage:  git recent-remote-prompt [<count=10>] [<for-each-ref-args>]\"; \
     echo \"        git recent-remote-prompt help\"; \
@@ -360,6 +372,7 @@
   }; f"
 
   # Warns if the working directory has uncommitted changes
+  # @private
   warn-if-dirty = "!f() { \
     if ! git diff --quiet || ! git diff --staged --quiet; then \
       echo '⚠️ Working directory has uncommitted changes.'; \
@@ -367,6 +380,7 @@
   }; f"
 
   # Appends tracking information to each line of the output of the original command
+  # @private
   with-tracking = "!f() { \
     : 'This is a wrapper for for-each-ref refs/heads, so all options will be forwarded to that command.'; \
     : 'But first run the same command and get only tracking information.'; \
