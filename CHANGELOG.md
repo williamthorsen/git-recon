@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.2] - 2024-08-18
+
+### Fixed
+
+- Fixed the issue that `git checkout-nth-remote` (or its shortcut equivalent) fails if the branch is not the default branch.
+
+### Tooling
+
+- Added a Deno configuration file (`deno.jsonc`) to support formatting and scripts.
+- Replaced `package.json` with `metadata.ts` and supporting Deno scripts.
+
 ## [0.8.1] - 2024-08-18
 
 ### Fixed
