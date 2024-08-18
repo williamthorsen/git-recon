@@ -1,10 +1,13 @@
 #!/bin/bash
 
-# Get the version number from package.json
-VERSION=$(jq -r .version package.json)
+# Exit immediately if a command exits with a non-zero status
+set -e
 
-# Check if jq command succeeded
-if [ $? -ne 0 ] || [ -z "$VERSION" ]; then
+# Change directory to the root of the repository
+cd "$(git rev-parse --show-toplevel)" || exit 1
+
+# Get the version number from metadata.ts
+if ! VERSION=$(deno run --allow-read scripts/helpers/readVersionNumber.ts) || [ -z "$VERSION" ]; then
   echo "Error: Could not retrieve the version number from package.json."
   exit 1
 fi
