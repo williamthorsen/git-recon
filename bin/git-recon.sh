@@ -15,7 +15,7 @@ install_config() {
     printf "Found Git config: %s\n" "$GITCONFIG_PATH"
     if grep -q "$GIT_RECON_CONFIG_PATH" "$GITCONFIG_PATH"; then
       printf "Found path to Git-Recon configuration: %s\n" "$GIT_RECON_CONFIG_PATH"
-      echo "Nothing to do"
+      echo "Nothing to do. Git-Recon is already configured."
       exit 0
     fi
     if grep -q "^\[include\]" "$GITCONFIG_PATH"; then
