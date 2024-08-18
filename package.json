@@ -1,6 +1,6 @@
 {
   "name": "git-recon",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "Git aliases for working with recent branches",
   "main": "index.js",
   "scripts": {

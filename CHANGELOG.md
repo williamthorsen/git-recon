@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.1] - 2024-08-18
+
+### Fixed
+
+- Fixed the issue that `git checkout-nth-remote` (or its shortcut equivalent) fails if Git lists the default remote branch as `<remote>` rather than `<remote>/HEAD`.
+
+### Changed
+
+- Improved the message that displays when Git-Recon is already configured. Old: "Nothing to do"; new: "Nothing to do. Git-Recon is already configured."
+
+### Internal
+
+- Added the script `list-git-configs.sh` to assist in debugging of Git configs. It lists all applicable Git configs in descending order of precedence.
+
 ## [0.8.0] - 2024-08-16
 
 ### Fixed
