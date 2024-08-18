@@ -30,19 +30,20 @@
     fi; \
     localBranches=$(git for-each-ref --format='%(refname:short)' --sort=-committerdate refs/heads/ | tr '\n' '@'); \
     remoteBranch=$(git for-each-ref --count=${count} --sort=-committerdate refs/remotes/ --format='%(refname:short)' | sed -n ${count}p); \
-    : 'If remote branch is the 'HEAD' pointer, check out the default branch.'; \
-    if [[ $remoteBranch == */HEAD ]]; then \
+    : 'If remote branch is the 'HEAD' pointer or the bare origin, it is the default branch.'; \
+    if [[ $remoteBranch == */HEAD || $remoteBranch != *"/"* ]]; then \
       : 'Get the name of the remote from remoteBranch'; \
       remote=$(echo $remoteBranch | awk -F/ '{print $1}'); \
       default_branch=$(git print-default-branch $remote); \
       echo \"Checking out default branch '$default_branch'\"; \
       remoteBranch=$remote/$default_branch; \
     fi; \
+    exit 0; \
     : 'If branch exists locally check it out. Otherwise, create a local branch that tracks the remote branch.'; \
     branchWithOption=$(echo $remoteBranch | awk -v localBranches="@"$localBranches -v remoteBranch=$remoteBranch \
       '{ \
         branch = substr($NF, index($NF, \"/\") + 1); \
-       if (match(localBranches, \"@\"branch\"@\") != 0) \
+        if (match(localBranches, \"@\"branch\"@\") != 0) \
           print branch; \
         else \
           print \"--track \" remoteBranch; \
