@@ -287,7 +287,7 @@
     echo \"        - <count=10>            # Number of branches to display\"; \
     echo \"        - <for-each-ref-args>   # Any arguments accepted by 'git for-each-ref'\"; \
     echo \"        - help                  # Displays this help message\"; \
-    echo \"Alias:  git recon\"; \
+    echo \"Alias:  git reconl\"; \
     git recent-legend; \
   }; f"
 
@@ -355,7 +355,7 @@
     echo \"        - <count=10>            # Number of branches to display\"; \
     echo \"        - <for-each-ref-args>   # Any of the standard args accepted by 'git for-each-ref'\"; \
     echo \"        - help                  # Displays this help message\"; \
-    echo \"Alias:  git recon-r\"; \
+    echo \"Alias:  git reconr\"; \
     git recent-remote-legend; \
   }; f"
 
@@ -391,9 +391,9 @@
 
   # Aliases for "checkout" & "recent + checkout": local branches
   con = checkout-nth
-  recon = recent-prompt
+  reconl = recent-prompt
 
   # Aliases for "checkout", "recent" & "recent + checkout": remote branches
   con-r = checkout-nth-remote
   recent-r = recent-remote
-  recon-r = recent-remote-prompt
+  reconr = recent-remote-prompt
