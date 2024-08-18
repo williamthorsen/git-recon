@@ -5,7 +5,7 @@ set -e
 
 BREW_PREFIX=$(brew --prefix)
 GITCONFIG_PATH="$HOME/.gitconfig"
-GIT_RECON_CONFIG_PATH="$BREW_PREFIX/etc/gitconfig.d/git-recon.gitconfig"
+GIT_RECON_CONFIG_PATH="$BREW_PREFIX/share/gitconfig.d/git-recon.gitconfig"
 INCLUDE_SECTION="[include]\n    path = $GIT_RECON_CONFIG_PATH\n"
 
 install_config() {

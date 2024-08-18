@@ -156,19 +156,21 @@ describe "is-tracking-branch"; (
   )
 )
 
-describe "list-recent-branches"; (
+describe "recent"; (
   ( it "lists recent branches";
     pattern='.+|.+|\w{7}|git/1|(\[.*\])?|origin/git/1'
-    actual=$(devGit list-recent-branches 1 | grep 'git/1$')
+
+    actual=$(devGit recent)
+    assert_critical_success $?
+
     assert_match "$actual" "$pattern"
   )
-)
 
-describe "recent"; (
   ( it "prepends a fisheye, space, and the row number to tracking branches"
     pattern="^⦿ ([0-9]+|▶︎).* main.* origin\s+\S+$" # Any non-empty string is tracking information
 
     lines=$(devGit recent)
+    assert_critical_success $?
 
     assert_matches_line "$lines" "$pattern"
   )
@@ -181,6 +183,7 @@ describe "recent"; (
     pattern="^  ([0-9]+|▶︎).* .*non-tracking-branch\s*$"
 
     lines=$(devGit recent)
+    assert_critical_success $?
 
     assert_matches_line "$lines" "$pattern"
   )
@@ -191,6 +194,7 @@ describe "recent"; (
     lines=$(\
       devGit recent --format='%(refname:short)' \
     )
+    assert_critical_success $?
 
     assert_matches_line "$lines" "$pattern"
   )
@@ -203,6 +207,7 @@ describe "with-tracking"; (
     lines=$(\
       devGit with-tracking --format='%(refname:short)' refs/heads \
     )
+    assert_critical_success $?
 
     assert_matches_line "$lines" "$pattern"
   )
@@ -217,6 +222,7 @@ describe "with-tracking"; (
     lines=$(\
       devGit with-tracking --format='%(refname:short)' refs/heads \
     )
+    assert_critical_success $?
 
     assert_matches_line "$lines" "$pattern"
 

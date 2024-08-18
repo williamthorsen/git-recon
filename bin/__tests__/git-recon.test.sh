@@ -56,7 +56,7 @@ describe "git-recon.sh installation process"; (
     output=$(run_script --install --config-path="$GITCONFIG_PATH" 2>&1)
     assert_success $? "$output"
     assert_file_contains "$GITCONFIG_PATH" "[include]"
-    assert_file_contains "$GITCONFIG_PATH" "path = $BREW_PREFIX/etc/gitconfig.d/git-recon.gitconfig"
+    assert_file_contains "$GITCONFIG_PATH" "path = $BREW_PREFIX/share/gitconfig.d/git-recon.gitconfig"
   )
 
   ( it "adds [include] section to existing test.gitconfig without include section";
@@ -64,21 +64,21 @@ describe "git-recon.sh installation process"; (
     output=$(run_script --install --config-path="$GITCONFIG_PATH" 2>&1)
     assert_success $? "$output"
     assert_file_contains "$GITCONFIG_PATH" "[include]"
-    assert_file_contains "$GITCONFIG_PATH" "path = $BREW_PREFIX/etc/gitconfig.d/git-recon.gitconfig"
+    assert_file_contains "$GITCONFIG_PATH" "path = $BREW_PREFIX/share/gitconfig.d/git-recon.gitconfig"
   )
 
   ( it "adds path to existing test.gitconfig with [include] section but without any paths";
     prepare_environment "./fixtures/with-include.gitconfig"
     output=$(run_script --install --config-path="$GITCONFIG_PATH" 2>&1)
     assert_success $? "$output"
-    assert_file_contains "$GITCONFIG_PATH" "path = $BREW_PREFIX/etc/gitconfig.d/git-recon.gitconfig"
+    assert_file_contains "$GITCONFIG_PATH" "path = $BREW_PREFIX/share/gitconfig.d/git-recon.gitconfig"
   )
 
   ( it "adds path to existing paths under [include] section in test.gitconfig";
     prepare_environment "./fixtures/with-path.gitconfig"
     output=$(run_script --install --config-path="$GITCONFIG_PATH" 2>&1)
     assert_success $? "$output"
-    assert_file_contains "$GITCONFIG_PATH" "path = $BREW_PREFIX/etc/gitconfig.d/git-recon.gitconfig"
+    assert_file_contains "$GITCONFIG_PATH" "path = $BREW_PREFIX/share/gitconfig.d/git-recon.gitconfig"
   )
 
   ( it "does nothing if path already exists in test.gitconfig";
