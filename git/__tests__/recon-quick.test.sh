@@ -27,8 +27,8 @@ describe "git aliases"; (
     assert_no_error devGit branches-with-tracking
   )
 
-  ( it "runs decorated";
-    assert_no_error devGit decorated
+  ( it "runs decorated-local";
+    assert_no_error devGit decorated-local
   )
 
   ( it "runs decorated-remote";
