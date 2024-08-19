@@ -12,8 +12,11 @@ if ! VERSION=$(deno run --allow-read scripts/helpers/readVersionNumber.ts) || [ 
   exit 1
 fi
 
+# Get the current UTC date in YYYY-MM-DD format
+DATE=$(date -u +"%Y-%m-%d")
+
 # Construct the gh release create command
-COMMAND=("gh" "release" "create" "v$VERSION" "--draft" "--title" "v$VERSION Release")
+COMMAND=("gh" "release" "create" "v$VERSION" "--draft" "--title" "v$VERSION - $DATE")
 
 # Display the command for confirmation
 echo "${COMMAND[@]}"

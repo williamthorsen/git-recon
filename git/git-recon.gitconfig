@@ -3,12 +3,14 @@
   # Most useful as a helper for `with-tracking`
   # @private
   branches-with-tracking = "!f() { \
+    git exit-if-not-git-repo || return 1; \
     git for-each-ref \"$@\" --format='%(refname:short) %(upstream:short) %(upstream:track)' refs/heads \
     | awk '{if ($2 != \"\" && $3 == \"\") $3 = \"[synced]\"; print}'; \
   }; f"
 
   # Select a recent branch by number
   checkout-nth-local = "!f() { \
+    git exit-if-not-git-repo || return 1; \
     count=$1; \
     : 'If count is not a numeric string, print usage and return an error code'; \
     if ! [[ \"$count\" =~ ^[0-9]+$ ]]; then \
@@ -21,6 +23,7 @@
   }; f"
 
   checkout-nth-remote = "!f() { \
+    git exit-if-not-git-repo || return 1; \
     count=$1; \
     : 'If count is not a numeric string, print usage and return an error code'; \
     if ! [[ \"$count\" =~ ^[0-9]+$ ]]; then \
@@ -54,6 +57,7 @@
   # Decorates the output of `git for-each-ref` with a tracking symbol, line no., current branch marker & tracking status
   # @private
   decorated-local = "!f() { \
+    git exit-if-not-git-repo || return 1; \
     current_branch=$(git branch --show-current); \
     branches=$(\
       git for-each-ref \
@@ -88,6 +92,7 @@
 
   # Same as `git decorated-local`, but for remote branches
   decorated-remote = "!f() { \
+    git exit-if-not-git-repo || return 1; \
     refs='refs/remotes/'; \
     args=(); \
     for arg in \"$@\"; do \
@@ -189,6 +194,7 @@
 
   # Displays the name of the remote's default branch
   default-branch = "!f() { \
+    git exit-if-not-git-repo || return 1; \
     remote=${1:-origin}; \
     git remote show $remote | grep 'HEAD branch' | awk '{print $NF}'; \
   }; f"
@@ -208,8 +214,21 @@
     : echo \"GIT_RECON_NO_UPSTREAM=[gone]\"; \
   }; f"
 
+  # Displays an error message and exits if the current directory is not a Git repository.
+  # The command is run once to perform the check without outputting anything,
+  # and then, if there was an error, is run a second time to output Git's own error message.
+  # @private
+  exit-if-not-git-repo = "!f() { \
+      git rev-parse --is-inside-work-tree > /dev/null 2>&1; \
+      if [ $? -ne 0 ]; then \
+        git rev-parse --is-inside-work-tree; \
+        return 1; \
+      fi; \
+    }; f"
+
   # @private
   extract-refs = "!f() { \
+    git exit-if-not-git-repo || return 1; \
     refs=; \
     other_args=(); \
     for arg in \"$@\"; do \
@@ -240,6 +259,7 @@
       git recent-local-usage; \
       return 0; \
     fi; \
+    git exit-if-not-git-repo || return 1; \
     count=10; \
     if [[ \"$1\" =~ ^-?[0-9]+$ ]]; then \
       count=$1; \
@@ -277,6 +297,7 @@
       git recent-prompt-local-usage; \
       return 0; \
     fi; \
+    git exit-if-not-git-repo || return 1; \
     git recent-local \"$@\"; \
     printf \"Enter branch number to check out branch, [h] for help, or [Enter] to quit: \"; \
     read input; \
@@ -306,6 +327,7 @@
       git recent-remote-usage; \
       return 0; \
     fi; \
+    git exit-if-not-git-repo || return 1; \
     count=10; \
     if [[ \"$1\" =~ ^-?[0-9]+$ ]]; then \
       count=$1; \
@@ -344,6 +366,7 @@
       git recent-prompt-remote-usage; \
       return 0; \
     fi; \
+    git exit-if-not-git-repo || return 1; \
     count=10; \
     if [[ \"$1\" =~ ^-?[0-9]+$ ]]; then \
       count=$1; \
@@ -374,6 +397,7 @@
   # Warns if the working directory has uncommitted changes
   # @private
   warn-if-dirty = "!f() { \
+    git exit-if-not-git-repo || return 1; \
     if ! git diff --quiet || ! git diff --staged --quiet; then \
       echo '⚠️ Working directory has uncommitted changes.'; \
     fi; \
@@ -405,10 +429,12 @@
 
   # Aliases for "recent", "checkout" & "recent + checkout": local branches
   recl = recent-local
+  recentl = recent-local
   conl = checkout-nth-local
   reconl = recent-prompt-local
 
   # Aliases for "recent", "checkout" & "recent + checkout": remote branches
   recr = recent-remote
+  recentr = recent-remote
   conr = checkout-nth-remote
   reconr = recent-prompt-remote
