@@ -6,7 +6,7 @@ This repository contains custom Git configuration files that define aliases usef
 
 ## Basic usage
 
-### `git checkout-nth`
+### `git checkout-nth-local`
 
 #### Purpose
 
@@ -19,7 +19,7 @@ Checks out the nth most recently updated local branch.
 git con <branch_number>
     
 # Long form
-git checkout-nth <branch_number>
+git checkout-nth-local <branch_number>
 ```
 
 ---

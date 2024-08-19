@@ -8,12 +8,12 @@
   }; f"
 
   # Select a recent branch by number
-  checkout-nth = "!f() { \
+  checkout-nth-local = "!f() { \
     count=$1; \
     : 'If count is not a numeric string, print usage and return an error code'; \
     if ! [[ \"$count\" =~ ^[0-9]+$ ]]; then \
       echo \"Checks out the nth recent branch.\"; \
-      echo \"Usage: git checkout-nth <branch_number>]\"; \
+      echo \"Usage: git checkout-nth-local <branch_number>]\"; \
       echo \"Alias: git con <branch_number>\"; \
       return 1; \
     fi; \
@@ -285,7 +285,7 @@
       ''|q|0) exit ;; \
       *[!0-9]*) echo 'Error: Input is not a branch number.'; exit 1 ;; \
     esac; \
-    git checkout-nth $input; \
+    git checkout-nth-local $input; \
   }; f"
 
   # @private
@@ -404,7 +404,7 @@
   }; f"
 
   # Aliases for "checkout" & "recent + checkout": local branches
-  con = checkout-nth
+  con = checkout-nth-local
   reconl = recent-prompt
 
   # Aliases for "checkout", "recent" & "recent + checkout": remote branches
