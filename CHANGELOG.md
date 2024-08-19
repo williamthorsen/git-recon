@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.10.0] - 2024-08-19
+
+### Features
+
+- Added guards to all the aliases that use underlying Git commands, so that they exit with Git's error message when run outside a repo.
+
+### Tooling
+
+- Modified the `create-release.sh` script to generate a title in the required format `v0.0.0 - 2024-01-01` instead of `v0.0.0 Release`
+
+### Tests
+
+- Fixed tests broken by alias changes in 0.9.0.
+
 ## [0.9.0] - 2024-08-19
 
 ### Changed
