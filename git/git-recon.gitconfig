@@ -53,7 +53,7 @@
 
   # Decorates the output of `git for-each-ref` with a tracking symbol, line no., current branch marker & tracking status
   # @private
-  decorated = "!f() { \
+  decorated-local = "!f() { \
     current_branch=$(git branch --show-current); \
     branches=$(\
       git for-each-ref \
@@ -86,7 +86,7 @@
     | column -ts'|'; \
   }; f"
 
-  # Same as `git decorated`, but for remote branches
+  # Same as `git decorated-local`, but for remote branches
   decorated-remote = "!f() { \
     refs='refs/remotes/'; \
     args=(); \
@@ -234,7 +234,7 @@
     | sed -e \"s/\\[synced\\]/${GREEN}${GIT_RECON_UP_TO_DATE}${RESET}/g\"; \
   }; f"
 
-  # Wrapper for `git decorated` that gets the 10 most recently updated local branches
+  # Wrapper for `git decorated-local` that gets the 10 most recently updated local branches
   recent = "!f() { \
     if [ \"$1\" = 'help' ]; then \
       git recent-usage; \
@@ -245,7 +245,7 @@
       count=$1; \
       shift; \
     fi; \
-    git decorated \
+    git decorated-local \
       --count=$count \
       \"$@\" \
       --sort=-committerdate; \
