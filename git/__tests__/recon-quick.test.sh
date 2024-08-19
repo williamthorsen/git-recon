@@ -72,13 +72,13 @@ describe "git aliases"; (
     assert_no_error devGit recent-remote-usage
   )
 
-  ( it "runs recent-remote-prompt";
-    output=$(echo | devGit recent-remote-prompt 2>&1)
+  ( it "runs recent-prompt-remote";
+    output=$(echo | devGit recent-prompt-remote 2>&1)
     assert_success $? "$output"
   )
 
-  ( it "runs recent-remote-prompt-usage";
-    assert_no_error devGit recent-remote-prompt-usage
+  ( it "runs recent-prompt-remote-usage";
+    assert_no_error devGit recent-prompt-remote-usage
   )
 
   ( it "runs with-tracking";

@@ -26,7 +26,7 @@
     if ! [[ \"$count\" =~ ^[0-9]+$ ]]; then \
       echo \"Checks out the nth recent remote branch.\"; \
       echo \"Usage: git checkout-nth-remote <branch_number>\"; \
-      echo \"Alias: git con-r <branch_number>\"; \
+      echo \"Alias: git conr <branch_number>\"; \
       return 1; \
     fi; \
     localBranches=$(git for-each-ref --format='%(refname:short)' --sort=-committerdate refs/heads/ | tr '\n' '@'); \
@@ -334,14 +334,14 @@
     echo \"        - <count=10>              # Number of branches to display\"; \
     echo \"        - <for-each-ref-options>  # Any arguments accepted by 'git for-each-ref'\"; \
     echo \"        - help                    # Displays this help message\"; \
-    echo \"Alias:  git recent-r\"; \
+    echo \"Alias:  git recr\"; \
     git recent-remote-legend; \
   }; f"
 
   # Run `git recent-remote` and then prompt to check out a branch by number
-  recent-remote-prompt = "!f() { \
+  recent-prompt-remote = "!f() { \
     if [ \"$1\" = 'help' ]; then \
-      git recent-remote-prompt-usage; \
+      git recent-prompt-remote-usage; \
       return 0; \
     fi; \
     count=10; \
@@ -352,18 +352,18 @@
     printf \"Enter branch number to check out branch, [h] for help, or [Enter] to quit: \"; \
     read input; \
     case $input in \
-      h) git recent-remote-prompt-usage; exit 0 ;; \
+      h) git recent-prompt-remote-usage; exit 0 ;; \
       ''|q|0) exit ;; \
       *[!0-9]*) echo 'Error: Input is not a branch number.'; exit 1 ;; \
     esac; \
     git checkout-nth-remote $input; \
   }; f"
 
-  # Shows usage message for `git recent-remote-prompt`
+  # Shows usage message for `git recent-prompt-remote`
   # @private
-  recent-remote-prompt-usage = "!f() { \
-    echo \"Usage:  git recent-remote-prompt [<count=10>] [<for-each-ref-options>]\"; \
-    echo \"        git recent-remote-prompt help\"; \
+  recent-prompt-remote-usage = "!f() { \
+    echo \"Usage:  git recent-prompt-remote [<count=10>] [<for-each-ref-options>]\"; \
+    echo \"        git recent-prompt-remote help\"; \
     echo \"        - <count=10>              # Number of branches to display\"; \
     echo \"        - <for-each-ref-options>  # Any options accepted by 'git for-each-ref'\"; \
     echo \"        - help                    # Displays this help message\"; \
@@ -405,10 +405,10 @@
 
   # Aliases for "recent", "checkout" & "recent + checkout": local branches
   recl = recent-local
-  con = checkout-nth-local
+  conl = checkout-nth-local
   reconl = recent-prompt-local
 
-  # Aliases for "checkout", "recent" & "recent + checkout": remote branches
-  recent-r = recent-remote
-  con-r = checkout-nth-remote
-  reconr = recent-remote-prompt
+  # Aliases for "recent", "checkout" & "recent + checkout": remote branches
+  recr = recent-remote
+  conr = checkout-nth-remote
+  reconr = recent-prompt-remote

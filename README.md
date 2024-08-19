@@ -16,7 +16,7 @@ Checks out the nth most recently updated local branch.
 
 ```shell
 # Short form
-git con <branch_number>
+git conl <branch_number>
     
 # Long form
 git checkout-nth-local <branch_number>
@@ -35,8 +35,11 @@ otherwise, it creates a local branch that tracks the remote branch.
 #### Usage
 
 ```shell
+# Short form
+git conr <branch_number>  # Alias
+
+# Long form
 git checkout-nth-remote <branch_number>
-git con-r <branch_number>  # Alias
 ```
 
 ---
@@ -103,7 +106,7 @@ Displays a list of the most recently updated remote branches, including tracking
 
 ```shell
 # Short form
-git recent-r <count=10> [<for-each-ref-options>]
+git recr <count=10> [<for-each-ref-options>]
 
 # Long form
 git recent-remote <count=10> [<for-each-ref-options>]
@@ -113,7 +116,7 @@ The command accepts any of the options accepted by `git for-each-ref`.
 
 ---
 
-### `git recent-remote-prompt`
+### `git recent-prompt-remote`
 
 #### Purpose
 
@@ -126,7 +129,7 @@ Displays recent remote branches and then prompts you to check one out by number.
 git reconr <count=10> [<for-each-ref-options>] 
 
 # Long form
-git recent-remote-prompt <count=10> [<for-each-ref-options>]
+git recent-prompt-remote <count=10> [<for-each-ref-options>]
 ```
 
 The command accepts any of the options accepted by `git for-each-ref`.
