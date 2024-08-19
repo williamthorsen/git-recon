@@ -5,13 +5,11 @@ cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1
 source ../../testing/test-helpers.sh
 
 # Path to the configuration file being tested. Must be an absolute path, because `git -c` doesn't accept relative paths.
-DEV_GIT_CONFIG="$HOME/repos/projects/git-recon/git/recon.dev.gitconfig"
+DEV_GIT_CONFIG="$HOME/repos/projects/git-recon/git/git-recon.gitconfig"
 
 devGit() {
   git -c include.path="$DEV_GIT_CONFIG" "$@"
 }
-
-# endregion
 
 set_up_tests
 
@@ -41,25 +39,25 @@ describe "git aliases"; (
     assert_no_error devGit format-tracking "my-local-branch [behind 2]"
   )
 
-  ( it "runs recent";
-    assert_no_error devGit recent
+  ( it "runs recent-local";
+    assert_no_error devGit recent-local
   )
 
-  ( it "runs recent";
-    assert_no_error devGit recent-legend
+  ( it "runs recent-local-legend";
+    assert_no_error devGit recent-local-legend
   )
 
-  ( it "runs recent-usage";
-    assert_no_error devGit recent-usage
+  ( it "runs recent-local-usage";
+    assert_no_error devGit recent-local-usage
   )
 
-  ( it "runs recent-prompt";
-    output=$(echo | devGit recent-prompt 2>&1)
+  ( it "runs recent-prompt-local";
+    output=$(echo | devGit recent-prompt-local 2>&1)
     assert_success $? "$output"
   )
 
-  ( it "runs recent-prompt-usage";
-    assert_no_error devGit recent-prompt-usage
+  ( it "runs recent-prompt-local-usage";
+    assert_no_error devGit recent-prompt-local-usage
   )
 
   ( it "runs recent-remote";
@@ -74,13 +72,13 @@ describe "git aliases"; (
     assert_no_error devGit recent-remote-usage
   )
 
-  ( it "runs recent-remote-prompt";
-    output=$(echo | devGit recent-remote-prompt 2>&1)
+  ( it "runs recent-prompt-remote";
+    output=$(echo | devGit recent-prompt-remote 2>&1)
     assert_success $? "$output"
   )
 
-  ( it "runs recent-remote-prompt-usage";
-    assert_no_error devGit recent-remote-prompt-usage
+  ( it "runs recent-prompt-remote-usage";
+    assert_no_error devGit recent-prompt-remote-usage
   )
 
   ( it "runs with-tracking";
