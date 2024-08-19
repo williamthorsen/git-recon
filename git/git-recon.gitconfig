@@ -14,7 +14,7 @@
     if ! [[ \"$count\" =~ ^[0-9]+$ ]]; then \
       echo \"Checks out the nth recent branch.\"; \
       echo \"Usage: git checkout-nth-local <branch_number>]\"; \
-      echo \"Alias: git con <branch_number>\"; \
+      echo \"Alias: git conl <branch_number>\"; \
       return 1; \
     fi; \
     git checkout $(git for-each-ref --count=\"${1:-1}\" --sort=-committerdate refs/heads/ --format='%(refname:short)' | sed -n ${1:-1}p); \
@@ -235,9 +235,9 @@
   }; f"
 
   # Wrapper for `git decorated-local` that gets the 10 most recently updated local branches
-  recent = "!f() { \
+  recent-local = "!f() { \
     if [ \"$1\" = 'help' ]; then \
-      git recent-usage; \
+      git recent-local-usage; \
       return 0; \
     fi; \
     count=10; \
@@ -253,7 +253,7 @@
   }; f"
 
   # @private
-  recent-legend = "!f() { \
+  recent-local-legend = "!f() { \
     eval $(git define-colors); \
     eval $(git define-symbols); \
     echo \"Legend: ▶︎ current branch\"; \
@@ -261,27 +261,27 @@
   }; f"
 
   # @private
-  recent-usage = "!f() { \
+  recent-local-usage = "!f() { \
     echo \"Lists recent branches.\"; \
-    echo \"Usage:  git recent [<count=10>] [<for-each-ref-options>]\"; \
-    echo \"        git recent help\"; \
+    echo \"Usage:  git recent-local [<count=10>] [<for-each-ref-options>]\"; \
+    echo \"        git recent-local help\"; \
     echo \"        - <count=10>              # Number of branches to display\"; \
     echo \"        - <for-each-ref-options>  # Any options accepted by 'git for-each-ref'\"; \
     echo \"        - help                    # Displays this help message\"; \
-    git recent-legend; \
+    git recent-local-legend; \
   }; f"
 
-  # Run `git recent` and then prompt to check out a branch by number
-  recent-prompt = "!f() { \
+  # Run `git recent-local` and then prompt to check out a branch by number
+  recent-prompt-local = "!f() { \
     if [ \"$1\" = 'help' ]; then \
-      git recent-prompt-usage; \
+      git recent-prompt-local-usage; \
       return 0; \
     fi; \
-    git recent \"$@\"; \
+    git recent-local \"$@\"; \
     printf \"Enter branch number to check out branch, [h] for help, or [Enter] to quit: \"; \
     read input; \
     case $input in \
-      h) git recent-prompt-usage; exit 0 ;; \
+      h) git recent-prompt-local-usage; exit 0 ;; \
       ''|q|0) exit ;; \
       *[!0-9]*) echo 'Error: Input is not a branch number.'; exit 1 ;; \
     esac; \
@@ -289,15 +289,15 @@
   }; f"
 
   # @private
-  recent-prompt-usage = "!f() { \
+  recent-prompt-local-usage = "!f() { \
     echo \"Lists recent branches and prompts to check out a branch.\"; \
-    echo \"Usage:  git recent-prompt [<count=10>] [<for-each-ref-options>]\"; \
-    echo \"        git recent-prompt help\"; \
+    echo \"Usage:  git recent-prompt-local [<count=10>] [<for-each-ref-options>]\"; \
+    echo \"        git recent-prompt-local help\"; \
     echo \"        - <count=10>              # Number of branches to display\"; \
     echo \"        - <for-each-ref-options>  # Any options accepted by 'git for-each-ref'\"; \
     echo \"        - help                    # Displays this help message\"; \
     echo \"Alias:  git reconl\"; \
-    git recent-legend; \
+    git recent-local-legend; \
   }; f"
 
   # Wrapper for `git decorated-remote` that gets the 10 most recently updated remote branches
@@ -403,11 +403,12 @@
       }'; \
   }; f"
 
-  # Aliases for "checkout" & "recent + checkout": local branches
+  # Aliases for "recent", "checkout" & "recent + checkout": local branches
+  recl = recent-local
   con = checkout-nth-local
-  reconl = recent-prompt
+  reconl = recent-prompt-local
 
   # Aliases for "checkout", "recent" & "recent + checkout": remote branches
-  con-r = checkout-nth-remote
   recent-r = recent-remote
+  con-r = checkout-nth-remote
   reconr = recent-remote-prompt

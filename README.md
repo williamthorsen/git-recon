@@ -55,7 +55,7 @@ git default-branch <remote_name=origin>
 
 ---
 
-### `git recent`
+### `git recent-local`
 
 #### Purpose
 
@@ -64,13 +64,16 @@ Displays a list of the most recently updated local branches, including tracking 
 #### Usage
 
 ```shell
+# Short form
+git recl
+
 # Long form
-git recent <count=10> [<for-each-ref-options>]
+git recent-local <count=10> [<for-each-ref-options>]
 ```
 
 ---
 
-### `git recent-prompt`
+### `git recent-prompt-local`
 
 #### Purpose
 
@@ -83,7 +86,7 @@ Displays recent branches and then prompts you to check one out by number.
 git reconl <count=10> [<for-each-ref-options>] 
 
 # Long form  
-git recent-prompt <count=10> [<for-each-ref-options>]
+git recent-prompt-local <count=10> [<for-each-ref-options>]
 ```
 
 The command accepts any of the options accepted by `git for-each-ref`.
