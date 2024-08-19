@@ -5,6 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.0] - 2024-08-19
+
+### Changed
+
+- Renamed aliases for consistency and to avoid conflict with the `git-recon` utility script:
+  - `checkout-nth` → `checkout-nth-local`
+  - `con` → `conl`
+  - `con-r` → `conr`
+  - `recent` → `recent-local`
+  - `recent-r` → `recr`
+  - `recent-prompt` → `recent-prompt-local`
+  - `recent-prompt-usage` → `recent-prompt-local-usage`
+  - `recent-remote-prompt` → `recent-prompt-remote`
+  - `recent-remote-prompt-usage` → `recent-prompt-remote-usage`
+  - `recent-usage` → `recent-local-usage`
+  - `recon` → `reconl`
+  - `recon-r` → `reconr`
+- Added `recl` alias for `recent-local`
+
+### Refactored
+
+- Renamed some internal aliases for clarity and consistency:
+  - `decorated` → `decorated-local`
+  - `recent-legend` → `recent-local-legend`
+
+### Docs
+
+- Updated README: Added overview, updated aliases, usage instructions, examples, and links to license and contribution guidelines
+- Removed detailed API reference from README (will be re-added in a separate document)
+- Added a CONTRIBUTING.md file with guidelines for contributing to the project
+
 ## [0.8.3] - 2024-08-18
 
 ### Fixed
