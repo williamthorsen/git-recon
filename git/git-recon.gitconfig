@@ -204,7 +204,7 @@
   define-symbols = "!f() { \
     echo \"GIT_RECON_UP_TO_DATE=✔\"; \
     echo \"GIT_RECON_NO_UPSTREAM=-×-\"; \
-    : echo \"GIT_RECON_UP_TO_DATE=[even]\"; \
+    : echo \"GIT_RECON_UP_TO_DATE=[synced]\"; \
     : echo \"GIT_RECON_NO_UPSTREAM=[gone]\"; \
   }; f"
 
@@ -263,11 +263,11 @@
   # @private
   recent-usage = "!f() { \
     echo \"Lists recent branches.\"; \
-    echo \"Usage:  git recent [<count=10>] [<for-each-ref-args>]\"; \
+    echo \"Usage:  git recent [<count=10>] [<for-each-ref-options>]\"; \
     echo \"        git recent help\"; \
-    echo \"        - <count=10>            # Number of branches to display\"; \
-    echo \"        - <for-each-ref-args>   # Any arguments accepted by 'git for-each-ref'\"; \
-    echo \"        - help                  # Displays this help message\"; \
+    echo \"        - <count=10>              # Number of branches to display\"; \
+    echo \"        - <for-each-ref-options>  # Any options accepted by 'git for-each-ref'\"; \
+    echo \"        - help                    # Displays this help message\"; \
     git recent-legend; \
   }; f"
 
@@ -291,11 +291,11 @@
   # @private
   recent-prompt-usage = "!f() { \
     echo \"Lists recent branches and prompts to check out a branch.\"; \
-    echo \"Usage:  git recent-prompt [<count=10>] [<for-each-ref-args>]\"; \
+    echo \"Usage:  git recent-prompt [<count=10>] [<for-each-ref-options>]\"; \
     echo \"        git recent-prompt help\"; \
-    echo \"        - <count=10>            # Number of branches to display\"; \
-    echo \"        - <for-each-ref-args>   # Any arguments accepted by 'git for-each-ref'\"; \
-    echo \"        - help                  # Displays this help message\"; \
+    echo \"        - <count=10>              # Number of branches to display\"; \
+    echo \"        - <for-each-ref-options>  # Any options accepted by 'git for-each-ref'\"; \
+    echo \"        - help                    # Displays this help message\"; \
     echo \"Alias:  git reconl\"; \
     git recent-legend; \
   }; f"
@@ -329,11 +329,11 @@
   # @private
   recent-remote-usage = "!f() { \
     echo \"Lists recent remote branches.\"; \
-    echo \"Usage:  git recent-remote [<count=10>] [<for-each-ref-args>]\"; \
+    echo \"Usage:  git recent-remote [<count=10>] [<for-each-ref-options>]\"; \
     echo \"        git recent-remote help\"; \
-    echo \"        - <count=10>            # Number of branches to display\"; \
-    echo \"        - <for-each-ref-args>   # Any arguments accepted by 'git for-each-ref'\"; \
-    echo \"        - help                  # Displays this help message\"; \
+    echo \"        - <count=10>              # Number of branches to display\"; \
+    echo \"        - <for-each-ref-options>  # Any arguments accepted by 'git for-each-ref'\"; \
+    echo \"        - help                    # Displays this help message\"; \
     echo \"Alias:  git recent-r\"; \
     git recent-remote-legend; \
   }; f"
@@ -362,11 +362,11 @@
   # Shows usage message for `git recent-remote-prompt`
   # @private
   recent-remote-prompt-usage = "!f() { \
-    echo \"Usage:  git recent-remote-prompt [<count=10>] [<for-each-ref-args>]\"; \
+    echo \"Usage:  git recent-remote-prompt [<count=10>] [<for-each-ref-options>]\"; \
     echo \"        git recent-remote-prompt help\"; \
-    echo \"        - <count=10>            # Number of branches to display\"; \
-    echo \"        - <for-each-ref-args>   # Any of the standard args accepted by 'git for-each-ref'\"; \
-    echo \"        - help                  # Displays this help message\"; \
+    echo \"        - <count=10>              # Number of branches to display\"; \
+    echo \"        - <for-each-ref-options>  # Any options accepted by 'git for-each-ref'\"; \
+    echo \"        - help                    # Displays this help message\"; \
     echo \"Alias:  git reconr\"; \
     git recent-remote-legend; \
   }; f"
