@@ -6,6 +6,7 @@
 
 # local-only files
 local/
+git/git-recon.dev.gitconfig
 
 # Node
 node_modules/
