@@ -26,7 +26,7 @@ GitRecon provides a simple way to
   * [💡 How to use](#-how-to-use)
     * [List](#list)
     * [Check out](#check-out)
-    * [List and prompt for checkout](#list-and-prompt-for-checkout)
+    * [List and checkout](#list-and-checkout)
   * [🛠️ Installation](#-installation)
     * [Homebrew](#homebrew)
     * [Manual installation](#manual-installation)
@@ -123,27 +123,27 @@ Switched to branch 'feature/user-auth'
 Your branch is ahead of 'origin/feature/user-auth' by 3 commits.
 ```
 
-### List and prompt for checkout
+### List and checkout
 
 Alternatively, you can run a single command that effectively **combines** these commands by listing recent branches and then prompting for a branch number to check out,
-which reduces the number of commands and keystrokes. ( This is the most common use case.)
+which reduces the number of commands and keystrokes. (This is the most common use case.)
 
 ```shell
 # Local branches
-git recent-prompt-local <count=10> [<for-each-ref-options>]
-# Short form (think "recl" + "conl")
+git recon-local <count=10> [<for-each-ref-options>]
+# Short form
 git reconl
 
 # Remote branches
-git recent-prompt-remote <count=10> [<for-each-ref-options>]
-# Short form (think "recr" + "conr")
+git recon-remote <count=10> [<for-each-ref-options>]
+# Short form
 git reconr
 ```
 
-Example of remote listing with prompt:
+Example of remote list and checkout:
 
 ```shell
-git reconr
+git recon-remote
 ```
 
 ```
