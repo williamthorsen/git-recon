@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.12.0] - 2024-08-20
+
+### Dropped features
+
+- Dropped references to support for `git for-each-ref` options in documentation and help messages until support
+  for these is robust and tested.
+
+### Tooling
+
+- Changed the `create-release.sh` script to run in automatic mode instead of interactive mode.
+  Added the necessary options to the script to support this change.
+
 ## [0.11.0] - 2024-08-20
 
 ### Changed
