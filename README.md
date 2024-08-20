@@ -1,5 +1,9 @@
 # Git Recon
 
+Easy branch status and checkout on the command line
+
+---
+
 [![Latest Version](https://img.shields.io/badge/version-0.12.0-blue.svg)](https://github.com/williamthorsen/git-recon/releases)
 [![License: ISC](https://img.shields.io/badge/License-ISC-yellow.svg)](https://opensource.org/licenses/ISC)
 
@@ -10,9 +14,8 @@ bundled into a single configuration file that can be referenced in your Git conf
 
 Git Recon aliases provide a simple way to
 
-- list recent branches with tracking information
+- list recent branches with tracking information, and then
 - check out a branch by number
-- automatically set up tracking branches
 
 ## ⚡ Table of Contents
 
@@ -213,7 +216,7 @@ git-recon --install
 
 ## 🤝 Contributing
 
-We welcome contributions to Git Recon! To get started, please read our [contribution guidelines](CONTRIBUTING.md).
+Contributions to Git Recon are welcomed! To get started, please read our [contribution guidelines](CONTRIBUTING.md).
 
 ## 🙏 Acknowledgments
 
@@ -223,4 +226,3 @@ We welcome contributions to Git Recon! To get started, please read our [contribu
 ## 📝 License
 
 This project is licensed under the ISC License. See the [LICENSE](LICENSE) file for details.
-
