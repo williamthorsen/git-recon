@@ -283,10 +283,9 @@
   # @private
   recent-local-usage = "!f() { \
     echo \"Lists recent branches.\"; \
-    echo \"Usage:  git recent-local [<count=10>] [<for-each-ref-options>]\"; \
+    echo \"Usage:  git recent-local [<count=10>]\"; \
     echo \"        git recent-local help\"; \
     echo \"        - <count=10>              # Number of branches to display\"; \
-    echo \"        - <for-each-ref-options>  # Any options accepted by 'git for-each-ref'\"; \
     echo \"        - help                    # Displays this help message\"; \
     git recent-local-legend; \
   }; f"
@@ -312,10 +311,9 @@
   # @private
   recon-local-usage = "!f() { \
     echo \"Lists recent branches and prompts to check out a branch.\"; \
-    echo \"Usage:  git recon-local [<count=10>] [<for-each-ref-options>]\"; \
+    echo \"Usage:  git recon-local [<count=10>]\"; \
     echo \"        git recon-local help\"; \
     echo \"        - <count=10>              # Number of branches to display\"; \
-    echo \"        - <for-each-ref-options>  # Any options accepted by 'git for-each-ref'\"; \
     echo \"        - help                    # Displays this help message\"; \
     echo \"Alias:  git reconl\"; \
     git recent-local-legend; \
@@ -351,10 +349,9 @@
   # @private
   recent-remote-usage = "!f() { \
     echo \"Lists recent remote branches.\"; \
-    echo \"Usage:  git recent-remote [<count=10>] [<for-each-ref-options>]\"; \
+    echo \"Usage:  git recent-remote [<count=10>]\"; \
     echo \"        git recent-remote help\"; \
     echo \"        - <count=10>              # Number of branches to display\"; \
-    echo \"        - <for-each-ref-options>  # Any arguments accepted by 'git for-each-ref'\"; \
     echo \"        - help                    # Displays this help message\"; \
     echo \"Alias:  git recr\"; \
     git recent-remote-legend; \
@@ -385,10 +382,9 @@
   # Shows usage message for `git recon-remote`
   # @private
   recon-remote-usage = "!f() { \
-    echo \"Usage:  git recon-remote [<count=10>] [<for-each-ref-options>]\"; \
+    echo \"Usage:  git recon-remote [<count=10>]\"; \
     echo \"        git recon-remote help\"; \
     echo \"        - <count=10>              # Number of branches to display\"; \
-    echo \"        - <for-each-ref-options>  # Any options accepted by 'git for-each-ref'\"; \
     echo \"        - help                    # Displays this help message\"; \
     echo \"Alias:  git reconr\"; \
     git recent-remote-legend; \

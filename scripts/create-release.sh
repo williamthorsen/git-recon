@@ -16,7 +16,9 @@ fi
 DATE=$(date -u +"%Y-%m-%d")
 
 # Construct the gh release create command
-COMMAND=("gh" "release" "create" "v$VERSION" "--draft" "--title" "v$VERSION - $DATE")
+# Note: Currently, notes for all releases are included and must be manually edited.
+# TODO: Extract only the notes for the current release.
+COMMAND=("gh" "release" "create" "v$VERSION" "--draft" "--generate-notes" "--notes-file=CHANGELOG.md" "--title" "v$VERSION - $DATE")
 
 # Display the command for confirmation
 echo "${COMMAND[@]}"
