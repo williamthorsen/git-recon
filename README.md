@@ -1,14 +1,14 @@
-# GitRecon
+# Git Recon
 
 [![Latest Version](https://img.shields.io/badge/version-0.11.0-blue.svg)](https://github.com/williamthorsen/git-recon/releases)
 [![License: ISC](https://img.shields.io/badge/License-ISC-yellow.svg)](https://opensource.org/licenses/ISC)
 
 ## 📖 Overview
 
-GitRecon is a set of custom aliases useful for working with recent Git branches,
+Git Recon is a set of custom aliases useful for working with recent Git branches,
 bundled into a single configuration file that can be referenced in your Git config.
 
-GitRecon provides a simple way to
+Git Recon aliases provide a simple way to
 
 - list recent branches with tracking information
 - check out a branch by number
@@ -17,7 +17,7 @@ GitRecon provides a simple way to
 ## ⚡ Table of Contents
 
 <!-- TOC -->
-* [GitRecon](#gitrecon)
+* [Git Recon](#git-recon)
   * [📖 Overview](#-overview)
   * [⚡ Table of Contents](#-table-of-contents)
   * [🏎️ Quick start](#-quick-start)
@@ -39,15 +39,15 @@ GitRecon provides a simple way to
 
 ## 🏎️ Quick start
 
-Here's how to get started quickly with GitRecon.
+Here's how to get started quickly with Git Recon aliases.
 For more detailed instructions, see the [How to use](#-how-to-use) and [Installation](#-installation) sections below.
 
 ```shell
-# Install GitRecon using Homebrew
+# Install Git Recon using Homebrew
 brew tap williamthorsen/tap
 brew install git-recon
 
-# Add the GitRecon configuration to your ~/.gitconfig
+# Add the Git Recon aliases file to your ~/.gitconfig
 git-recon --install
 
 # Switch to any directory in a Git repository and view recent local and remote branches
@@ -69,8 +69,7 @@ git recon-remote
 
 - Offers choice of explicit long-form or convenient short-form aliases
 - Easy to combine with other Git configurations
-- Extensible and customizable: List commands accept all options of `git for-each-ref`
-- One-line configuration: Just include the configuration file in your `~/.gitconfig`
+- One-line configuration: Just include the aliases file in your `~/.gitconfig`
 - Purely alias-based: No scripts, plugins, or additional dependencies
 - Provides help text and legend for each command
 
@@ -81,13 +80,13 @@ git recon-remote
 Start by listing recent branches, which can be local or remote.
 
 ```shell
-# Local branches
-git recent-local <count=10> [<for-each-ref-options>]
+# List local branches
+git recent-local [<count=10>]
 # Short form
 git recl
 
-# Remote branches
-git recent-remote <count=10> [<for-each-ref-options>]
+# List remote branches
+git recent-remote [<count=10>]
 # Short form
 git recr
 ```
@@ -95,7 +94,7 @@ git recr
 Sample output:
 
 ```bash
-git recl # recent-local
+git recent-local
 ```
 
 ```
@@ -119,22 +118,21 @@ Legend: ▶︎ current branch
 Then check out a branch by using the number displayed in the list.
 
 ```shell
-# Local branch
+# Check out a local branch
 git checkout-nth-local <branch_number>
-# Short form
+# Short form: c[heck o[ut] n[th] l[ocal]
 git conl
 
-  
-# Remote branch
+# Check out a remote branch
 git checkout-nth-remote <branch_number>
-# Short form
+# Short form: c[heck o[ut] n[th] r[emote]
 git conr
 ```
 
 Example:
 
 ```shell
-git conl 1
+git checkout-nth-local 1
 ```
 
 ```
@@ -148,13 +146,13 @@ Alternatively, you can run a single command that effectively **combines** these 
 which reduces the number of commands and keystrokes. (This is the most common use case.)
 
 ```shell
-# Local branches
-git recon-local <count=10> [<for-each-ref-options>]
+# List & check out local branches
+git recon-local [<count=10>]
 # Short form
 git reconl
 
-# Remote branches
-git recon-remote <count=10> [<for-each-ref-options>]
+# List & check out remote branches
+git recon-remote [<count=10>]
 # Short form
 git reconr
 ```
@@ -196,8 +194,8 @@ git-recon --install
 
 ### Manual installation
 
-1. Clone the repo or download the configuration file.
-2. Add a directive to your `~/.gitconfig` file to include the configuration file:
+1. Clone the repo or download the aliases file.
+2. Add a directive to your `~/.gitconfig` file to include the aliases file:
 
 ```ini
 [include]
@@ -215,7 +213,7 @@ git-recon --install
 
 ## 🤝 Contributing
 
-We welcome contributions to GitRecon! To get started, please read our [contribution guidelines](CONTRIBUTING.md).
+We welcome contributions to Git Recon! To get started, please read our [contribution guidelines](CONTRIBUTING.md).
 
 ## 🙏 Acknowledgments
 
