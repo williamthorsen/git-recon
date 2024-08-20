@@ -213,6 +213,8 @@ git-recon --install
 - [ ] Adopt a framework appropriate for unit testing of Git commands
 - [ ] Improve tooling: automated versioning, changelog generation, release management
 - [ ] Add automated testing against different versions of Git
+- [ ] Add an option to disable colors in output
+- [ ] Add new features
 
 ## 🤝 Contributing
 
