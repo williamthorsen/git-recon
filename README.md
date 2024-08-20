@@ -20,13 +20,14 @@ GitRecon provides a simple way to
 * [GitRecon](#gitrecon)
   * [📖 Overview](#-overview)
   * [⚡ Table of Contents](#-table-of-contents)
+  * [🏎️ Quick start](#-quick-start)
   * [🎯 Features](#-features)
     * [Core features](#core-features)
     * [More features](#more-features)
   * [💡 How to use](#-how-to-use)
     * [List](#list)
     * [Check out](#check-out)
-    * [List and prompt for checkout](#list-and-prompt-for-checkout)
+    * [List and checkout](#list-and-checkout)
   * [🛠️ Installation](#-installation)
     * [Homebrew](#homebrew)
     * [Manual installation](#manual-installation)
@@ -35,6 +36,24 @@ GitRecon provides a simple way to
   * [🙏 Acknowledgments](#-acknowledgments)
   * [📝 License](#-license)
 <!-- TOC -->
+
+## 🏎️ Quick start
+
+Here's how to get started quickly with GitRecon.
+For more detailed instructions, see the [How to use](#-how-to-use) and [Installation](#-installation) sections below.
+
+```shell
+# Install GitRecon using Homebrew
+brew tap williamthorsen/tap
+brew install git-recon
+
+# Add the GitRecon configuration to your ~/.gitconfig
+git-recon --install
+
+# Switch to any directory in a Git repository and view recent local and remote branches
+git recon-local
+git recon-remote
+```
 
 ## 🎯 Features
 
@@ -123,27 +142,27 @@ Switched to branch 'feature/user-auth'
 Your branch is ahead of 'origin/feature/user-auth' by 3 commits.
 ```
 
-### List and prompt for checkout
+### List and checkout
 
 Alternatively, you can run a single command that effectively **combines** these commands by listing recent branches and then prompting for a branch number to check out,
-which reduces the number of commands and keystrokes. ( This is the most common use case.)
+which reduces the number of commands and keystrokes. (This is the most common use case.)
 
 ```shell
 # Local branches
-git recent-prompt-local <count=10> [<for-each-ref-options>]
-# Short form (think "recl" + "conl")
+git recon-local <count=10> [<for-each-ref-options>]
+# Short form
 git reconl
 
 # Remote branches
-git recent-prompt-remote <count=10> [<for-each-ref-options>]
-# Short form (think "recr" + "conr")
+git recon-remote <count=10> [<for-each-ref-options>]
+# Short form
 git reconr
 ```
 
-Example of remote listing with prompt:
+Example of remote list and checkout:
 
 ```shell
-git reconr
+git recon-remote
 ```
 
 ```
@@ -196,7 +215,7 @@ git-recon --install
 
 ## 🤝 Contributing
 
-We welcome contributions to GitRecon! To get started, please read our [Contributing Guidelines](CONTRIBUTING.md).
+We welcome contributions to GitRecon! To get started, please read our [contribution guidelines](CONTRIBUTING.md).
 
 ## 🙏 Acknowledgments
 

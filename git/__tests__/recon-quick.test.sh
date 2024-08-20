@@ -51,13 +51,13 @@ describe "git aliases"; (
     assert_no_error devGit recent-local-usage
   )
 
-  ( it "runs recent-prompt-local";
-    output=$(echo | devGit recent-prompt-local 2>&1)
+  ( it "runs recon-local";
+    output=$(echo | devGit recon-local 2>&1)
     assert_success $? "$output"
   )
 
-  ( it "runs recent-prompt-local-usage";
-    assert_no_error devGit recent-prompt-local-usage
+  ( it "runs recon-local-usage";
+    assert_no_error devGit recon-local-usage
   )
 
   ( it "runs recent-remote";
@@ -72,13 +72,13 @@ describe "git aliases"; (
     assert_no_error devGit recent-remote-usage
   )
 
-  ( it "runs recent-prompt-remote";
-    output=$(echo | devGit recent-prompt-remote 2>&1)
+  ( it "runs recon-remote";
+    output=$(echo | devGit recon-remote 2>&1)
     assert_success $? "$output"
   )
 
-  ( it "runs recent-prompt-remote-usage";
-    assert_no_error devGit recent-prompt-remote-usage
+  ( it "runs recon-remote-usage";
+    assert_no_error devGit recon-remote-usage
   )
 
   ( it "runs with-tracking";

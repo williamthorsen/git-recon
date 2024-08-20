@@ -291,10 +291,10 @@
     git recent-local-legend; \
   }; f"
 
-  # Run `git recent-local` and then prompt to check out a branch by number
-  recent-prompt-local = "!f() { \
+  # List recent branches, then check out entered branch number (combo of `recent` and `checkout-nth`, local version)
+  recon-local = "!f() { \
     if [ \"$1\" = 'help' ]; then \
-      git recent-prompt-local-usage; \
+      git recon-local-usage; \
       return 0; \
     fi; \
     git exit-if-not-git-repo || return 1; \
@@ -302,7 +302,7 @@
     printf \"Enter branch number to check out branch, [h] for help, or [Enter] to quit: \"; \
     read input; \
     case $input in \
-      h) git recent-prompt-local-usage; exit 0 ;; \
+      h) git recon-local-usage; exit 0 ;; \
       ''|q|0) exit ;; \
       *[!0-9]*) echo 'Error: Input is not a branch number.'; exit 1 ;; \
     esac; \
@@ -310,10 +310,10 @@
   }; f"
 
   # @private
-  recent-prompt-local-usage = "!f() { \
+  recon-local-usage = "!f() { \
     echo \"Lists recent branches and prompts to check out a branch.\"; \
-    echo \"Usage:  git recent-prompt-local [<count=10>] [<for-each-ref-options>]\"; \
-    echo \"        git recent-prompt-local help\"; \
+    echo \"Usage:  git recon-local [<count=10>] [<for-each-ref-options>]\"; \
+    echo \"        git recon-local help\"; \
     echo \"        - <count=10>              # Number of branches to display\"; \
     echo \"        - <for-each-ref-options>  # Any options accepted by 'git for-each-ref'\"; \
     echo \"        - help                    # Displays this help message\"; \
@@ -360,10 +360,10 @@
     git recent-remote-legend; \
   }; f"
 
-  # Run `git recent-remote` and then prompt to check out a branch by number
-  recent-prompt-remote = "!f() { \
+  # List recent branches, then check out entered branch number (combo of `recent` and `checkout-nth`, remote version)
+  recon-remote = "!f() { \
     if [ \"$1\" = 'help' ]; then \
-      git recent-prompt-remote-usage; \
+      git recon-remote-usage; \
       return 0; \
     fi; \
     git exit-if-not-git-repo || return 1; \
@@ -375,18 +375,18 @@
     printf \"Enter branch number to check out branch, [h] for help, or [Enter] to quit: \"; \
     read input; \
     case $input in \
-      h) git recent-prompt-remote-usage; exit 0 ;; \
+      h) git recon-remote-usage; exit 0 ;; \
       ''|q|0) exit ;; \
       *[!0-9]*) echo 'Error: Input is not a branch number.'; exit 1 ;; \
     esac; \
     git checkout-nth-remote $input; \
   }; f"
 
-  # Shows usage message for `git recent-prompt-remote`
+  # Shows usage message for `git recon-remote`
   # @private
-  recent-prompt-remote-usage = "!f() { \
-    echo \"Usage:  git recent-prompt-remote [<count=10>] [<for-each-ref-options>]\"; \
-    echo \"        git recent-prompt-remote help\"; \
+  recon-remote-usage = "!f() { \
+    echo \"Usage:  git recon-remote [<count=10>] [<for-each-ref-options>]\"; \
+    echo \"        git recon-remote help\"; \
     echo \"        - <count=10>              # Number of branches to display\"; \
     echo \"        - <for-each-ref-options>  # Any options accepted by 'git for-each-ref'\"; \
     echo \"        - help                    # Displays this help message\"; \
@@ -431,10 +431,10 @@
   recl = recent-local
   recentl = recent-local
   conl = checkout-nth-local
-  reconl = recent-prompt-local
+  reconl = recon-local # combo of `recl` and `conl`
 
   # Aliases for "recent", "checkout" & "recent + checkout": remote branches
   recr = recent-remote
   recentr = recent-remote
   conr = checkout-nth-remote
-  reconr = recent-prompt-remote
+  reconr = recon-remote # combo of `recr` and `conr`
