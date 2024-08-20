@@ -1,6 +1,6 @@
 # GitRecon
 
-[![Latest Version](https://img.shields.io/badge/version-0.10.0-blue.svg)](https://github.com/williamthorsen/git-recon/releases)
+[![Latest Version](https://img.shields.io/badge/version-0.11.0-blue.svg)](https://github.com/williamthorsen/git-recon/releases)
 [![License: ISC](https://img.shields.io/badge/License-ISC-yellow.svg)](https://opensource.org/licenses/ISC)
 
 ## 📖 Overview

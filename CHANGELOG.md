@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.11.0] - 2024-08-20
+
+### Changed
+
+- Renamed aliases for consistency:
+  - `recent-prompt-local` → `recon-local`
+  - `recent-prompt-local-usage` → `recon-local-usage`
+  - `recent-prompt-remote` → `recon-remote`
+  - `recent-prompt-remote-usage` → `recon-remote-usage`
+
 ## [0.10.0] - 2024-08-19
 
 ### Features
