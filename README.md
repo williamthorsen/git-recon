@@ -20,6 +20,7 @@ GitRecon provides a simple way to
 * [GitRecon](#gitrecon)
   * [📖 Overview](#-overview)
   * [⚡ Table of Contents](#-table-of-contents)
+  * [🏎️ Quick start](#-quick-start)
   * [🎯 Features](#-features)
     * [Core features](#core-features)
     * [More features](#more-features)
@@ -35,6 +36,24 @@ GitRecon provides a simple way to
   * [🙏 Acknowledgments](#-acknowledgments)
   * [📝 License](#-license)
 <!-- TOC -->
+
+## 🏎️ Quick start
+
+Here's how to get started quickly with GitRecon.
+For more detailed instructions, see the [How to use](#-how-to-use) and [Installation](#-installation) sections below.
+
+```shell
+# Install GitRecon using Homebrew
+brew tap williamthorsen/tap
+brew install git-recon
+
+# Add the GitRecon configuration to your ~/.gitconfig
+git-recon --install
+
+# Switch to any directory in a Git repository and view recent local and remote branches
+git recon-local
+git recon-remote
+```
 
 ## 🎯 Features
 
@@ -196,7 +215,7 @@ git-recon --install
 
 ## 🤝 Contributing
 
-We welcome contributions to GitRecon! To get started, please read our [Contributing Guidelines](CONTRIBUTING.md).
+We welcome contributions to GitRecon! To get started, please read our [contribution guidelines](CONTRIBUTING.md).
 
 ## 🙏 Acknowledgments
 
