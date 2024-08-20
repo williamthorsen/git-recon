@@ -45,12 +45,12 @@ We appreciate pull requests to improve GitRecon. Here's how to get started:
    ```bash
    git commit -m "Add feature/fix/whatever: Brief description of the changes"
    ```
-   
+
 6. **Push to your branch**:
 
-  ```bash
-  git push origin feature/my-new-feature
-  ```
+   ```bash
+   git push origin feature/my-new-feature
+   ```
 
 7. **Open a Pull Request**: Go to your fork on GitHub and click the "Compare & pull request" button.
 

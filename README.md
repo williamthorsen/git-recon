@@ -200,10 +200,10 @@ git-recon --install
 1. Clone the repo or download the aliases file.
 2. Add a directive to your `~/.gitconfig` file to include the aliases file:
 
-```ini
-[include]
-    path = /path/to/git-recon.gitconfig
-```
+   ```ini
+   [include]
+       path = /path/to/git-recon.gitconfig
+   ```
 
 ## 🛣️ Roadmap
 
